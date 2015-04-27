@@ -3,7 +3,8 @@ package com.wix.restaurants.fax.interfax.sl
 import com.google.api.client.http.HttpRequestFactory
 import com.twitter.util.{Return, Throw, Try}
 import com.wix.restaurants.fax.FaxErrorException
-import com.wix.restaurants.fax.model.Fax
+import com.wix.restaurants.fax.interfax.sl.model.StatusCode
+import com.wix.restaurants.fax.model.{Fax, Status}
 
 import scala.concurrent.duration.Duration
 
@@ -42,6 +43,19 @@ class InterfaxslFax(requestFactory: HttpRequestFactory,
     }
   }
 
-  // TODO: implement
-  override def retrieveStatus(documentId: String): Try[String] = ???
+  override def retrieveStatus(documentId: String): Try[String] = {
+    interfaxsl.queryList(List(documentId.toLong)) match {
+      case Return(faxItems) => Return(translateInterfaxStatusCode(faxItems.head.Status))
+      case Throw(e) => Throw(new FaxErrorException(e.getMessage, e))
+    }
+  }
+
+  private def translateInterfaxStatusCode(statusCode: Int): String = {
+    // @see http://www.interfax.net/en/dev/secure_lounge/reference/soap/statuscodes
+    statusCode match {
+      case StatusCode.ok => Status.sent
+      case x if x < 0 => Status.pending
+      case x if x > 0 => Status.failed
+    }
+  }
 }

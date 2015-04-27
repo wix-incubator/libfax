@@ -3,7 +3,7 @@ package com.wix.restaurants.fax.interfax.sl.testkit
 import java.util.{List => JList}
 
 import com.google.api.client.http.UrlEncodedParser
-import com.wix.restaurants.fax.interfax.sl.model.{SendCharFaxResponse, SendCharFaxResponseParser}
+import com.wix.restaurants.fax.interfax.sl.model.{QueryResult, QueryResultParser, SendCharFaxResponse, SendCharFaxResponseParser}
 import com.wixpress.framework.test.http.EmbeddedHttpProbe
 import spray.http._
 
@@ -12,7 +12,8 @@ import scala.collection.mutable
 
 class InterfaxslDriver(port: Int) {
   private val probe = new EmbeddedHttpProbe(port, EmbeddedHttpProbe.NotFoundHandler)
-  private val sendCharFaxResponseParser = new SendCharFaxResponseParser()
+  private val sendCharFaxResponseParser = new SendCharFaxResponseParser
+  private val queryResultParser = new QueryResultParser
 
   def startProbe() {
     probe.doStart()
@@ -30,18 +31,22 @@ class InterfaxslDriver(port: Int) {
     new SendCharFaxCtx(params)
   }
 
-  class SendCharFaxCtx(params: Map[String, String]) {
-    def returns(sendCharFaxResponseValue: Long): Unit = {
+  def aQueryListFor(params: Map[String, String]): QueryListCtx = {
+    new QueryListCtx(params)
+  }
+
+  abstract class Ctx(resource: String, params: Map[String, String]) {
+    protected def returnsXml(responseXml: String): Unit = {
       probe.handlers += {
         case HttpRequest(
         HttpMethods.POST,
-        Uri.Path("/SendCharFax"),
+        Uri.Path(`resource`),
         _,
         entity,
         _) if isStubbedRequestEntity(entity) =>
           HttpResponse(
             status = StatusCodes.OK,
-            entity = HttpEntity(ContentType(MediaTypes.`text/xml`, HttpCharsets.`UTF-8`), buildSendCharFaxResponseXml(sendCharFaxResponseValue)))
+            entity = HttpEntity(ContentType(MediaTypes.`text/xml`, HttpCharsets.`UTF-8`), responseXml))
       }
     }
 
@@ -58,11 +63,17 @@ class InterfaxslDriver(port: Int) {
       UrlEncodedParser.parse(str, mutableMapAsJavaMap(params))
       params.mapValues( _(0) ).toMap
     }
+  }
 
-    private def buildSendCharFaxResponseXml(sendCharFaxResponseValue: Long): String = {
-      val sendCharFaxResponse = new SendCharFaxResponse()
-      sendCharFaxResponse.value = sendCharFaxResponseValue
-      sendCharFaxResponseParser.stringify(sendCharFaxResponse)
+  class SendCharFaxCtx(params: Map[String, String]) extends Ctx("/SendCharFax", params) {
+    def returns(sendCharFaxResponse: SendCharFaxResponse): Unit = {
+      returnsXml(sendCharFaxResponseParser.stringify(sendCharFaxResponse))
+    }
+  }
+
+  class QueryListCtx(params: Map[String, String]) extends Ctx("/QueryList", params) {
+    def returns(queryResult: QueryResult): Unit = {
+      returnsXml(queryResultParser.stringify(queryResult))
     }
   }
 }

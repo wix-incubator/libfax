@@ -1,12 +1,14 @@
 package com.wix.restaurants.fax.interfax.sl.it
 
+import java.util
+
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.twitter.util.{Throw, Try}
 import com.wix.restaurants.fax.FaxErrorException
-import com.wix.restaurants.fax.interfax.sl.model.ErrorCode
+import com.wix.restaurants.fax.interfax.sl.model._
 import com.wix.restaurants.fax.interfax.sl.testkit.InterfaxslDriver
 import com.wix.restaurants.fax.interfax.sl.{Credentials, InterfaxslFax, InterfaxslHelper}
-import com.wix.restaurants.fax.model.Fax
+import com.wix.restaurants.fax.model.{Fax, Status}
 import com.wix.restaurants.fax.testkit.FaxDocumentBuilder
 import org.specs2.matcher._
 import org.specs2.mutable.SpecificationWithJUnit
@@ -55,9 +57,59 @@ class InterfaxslFaxIT extends SpecificationWithJUnit with NoTimeConversions {
       )
     }
 
+    def aQueryListRequest(): Map[String, String] = {
+      val helper = new InterfaxslHelper
+      helper.createQueryListParams(
+        credentials = someCredentials,
+        transactionIds = List(someTransactionId)
+      )
+    }
+
     val someTransactionId = 1234L
+    def aSuccessfulSendCharFaxResponse(): SendCharFaxResponse = {
+      val sendCharFaxResponse = new SendCharFaxResponse
+      sendCharFaxResponse.value = someTransactionId
+      sendCharFaxResponse
+    }
 
     val someErrorCode = ErrorCode.invalidRecipient
+    def aFailedSendCharFaxResponse(): SendCharFaxResponse = {
+      val sendCharFaxResponse = new SendCharFaxResponse
+      sendCharFaxResponse.value = someErrorCode.toLong
+      sendCharFaxResponse
+    }
+
+    private def aQueryResult(statusCode: Int): QueryResult = {
+      val faxItem = new FaxItemEx
+      faxItem.TransactionID = someTransactionId
+      faxItem.Status = statusCode
+
+      val queryResult = new QueryResult
+      queryResult.ResultCode = ErrorCode.ok
+      queryResult.FaxItems = new FaxItems
+      queryResult.FaxItems.FaxItem = new util.LinkedList
+      queryResult.FaxItems.FaxItem.add(faxItem)
+
+      queryResult
+    }
+
+    def aPendingQueryResult(): QueryResult = {
+      aQueryResult(StatusCode.ready)
+    }
+
+    def aSentQueryResult(): QueryResult = {
+      aQueryResult(StatusCode.ok)
+    }
+
+    def aSendFailedQueryResult(): QueryResult = {
+      aQueryResult(StatusCode.busy)
+    }
+
+    def aFailedQueryResult(): QueryResult = {
+      val queryResult = new QueryResult
+      queryResult.ResultCode = someErrorCode
+      queryResult
+    }
 
     driver.resetProbe()
   }
@@ -96,7 +148,7 @@ class InterfaxslFaxIT extends SpecificationWithJUnit with NoTimeConversions {
     "successfully yield a fax document ID on valid request" in new Ctx {
       driver.aSendCharFaxFor(
         aSendCharFaxRequest()
-      ) returns someTransactionId
+      ) returns aSuccessfulSendCharFaxResponse()
 
       fax.send(
         to = someTo,
@@ -106,11 +158,53 @@ class InterfaxslFaxIT extends SpecificationWithJUnit with NoTimeConversions {
     "gracefully fail on error" in new Ctx {
       driver.aSendCharFaxFor(
         aSendCharFaxRequest()
-      ) returns someErrorCode
+      ) returns aFailedSendCharFaxResponse()
 
       fax.send(
         to = someTo,
         html = someFaxDocumentHtml) must beFailure[FaxErrorException](msg = contain(someErrorCode.toString))
+    }
+  }
+
+  "retrieveStatus request via InterFax SecureLounge" should {
+    "successfully yield a 'pending' status on valid request" in new Ctx {
+      driver.aQueryListFor(
+        aQueryListRequest()
+      ) returns aPendingQueryResult()
+
+      fax.retrieveStatus(
+        documentId = someTransactionId.toString
+      ) must beSuccessful(string = ===(Status.pending))
+    }
+
+    "successfully yield a 'sent' status on valid request" in new Ctx {
+      driver.aQueryListFor(
+        aQueryListRequest()
+      ) returns aSentQueryResult()
+
+      fax.retrieveStatus(
+        documentId = someTransactionId.toString
+      ) must beSuccessful(string = ===(Status.sent))
+    }
+
+    "successfully yield a 'failed' status on valid request" in new Ctx {
+      driver.aQueryListFor(
+        aQueryListRequest()
+      ) returns aSendFailedQueryResult()
+
+      fax.retrieveStatus(
+        documentId = someTransactionId.toString
+      ) must beSuccessful(string = ===(Status.failed))
+    }
+
+    "gracefully fail on error" in new Ctx {
+      driver.aQueryListFor(
+        aQueryListRequest()
+      ) returns aFailedQueryResult()
+
+      fax.retrieveStatus(
+        documentId = someTransactionId.toString
+      ) must beFailure[FaxErrorException](msg = contain(someErrorCode.toString))
     }
   }
 
