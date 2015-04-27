@@ -3,23 +3,23 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.wixpress.openrest</groupId>
-    <artifactId>libfax-all</artifactId>
+    <artifactId>libfax-interfaxsl-core</artifactId>
+    <name>InterFax SecureLounge Core</name>
     <version>1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <url>${project_url}/${project.artifactId}</url>
-    <description>Wix Restaurants Fax SPI aggregator</description>
+    <packaging>jar</packaging>
+    <description>Wix Restaurants Fax InterFax SecureLounge Adapter Core</description>
 
     <developers>
         <developer>
-            <name>Ohad Raz</name>
-            <email>ohadr@wix.com</email>
+            <name>Danny Leshem</name>
+            <email>dannyl@wix.com</email>
             <roles>
                 <role>owner</role>
             </roles>
         </developer>
         <developer>
-            <name>Danny Leshem</name>
-            <email>dannyl@wix.com</email>
+            <name>Ohad Raz</name>
+            <email>ohadr@wix.com</email>
             <roles>
                 <role>owner</role>
             </roles>
@@ -39,12 +39,21 @@
         <version>100.0.0-SNAPSHOT</version>
         <relativePath />
     </parent>
-	
-    <modules>
-        <module>libfax-api</module>
-        <module>libfax-testkit</module>
-        <module>libfax-interfaxsl</module>
-        <module>libfax-interfaxsl-core</module>
-        <module>libfax-interfaxsl-testkit</module>
-    </modules>
+
+    <dependencies>
+        <!-- Compile/runtime dependencies -->
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>com.wixpress.common</groupId>
+            <artifactId>wix-framework-scala-test-dependencies</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-httpclient</groupId>
+                    <artifactId>commons-httpclient</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
 </project>
