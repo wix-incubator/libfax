@@ -16,7 +16,7 @@ object Endpoint {
   val production = "https://ws-sl.fax.tc/Outbound.asmx/"
 }
 
-object Interfaxsl {
+object InterfaxslFax {
   val ID = "net.interfax.sl"
 }
 
@@ -41,7 +41,7 @@ class InterfaxslFax(requestFactory: HttpRequestFactory,
     credentials = credentials
   )
 
-  override def getId: String = Interfaxsl.ID
+  override def getId: String = InterfaxslFax.ID
 
   override def send(to: String, html: String): Try[String] = {
     interfaxsl.sendCharFax(to, html) match {
