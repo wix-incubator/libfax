@@ -20,6 +20,13 @@ object Interfaxsl {
   val ID = "net.interfax.sl"
 }
 
+/**
+ * InterFax SecureLounge client.
+ *
+ * HTML documents with Unicode characters must include a
+ *   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+ * in their head section (InterFax ignores <meta charset="utf-8">).
+ */
 class InterfaxslFax(requestFactory: HttpRequestFactory,
                     endpoint: String = Endpoint.production,
                     connectTimeout: Option[Duration] = None,
