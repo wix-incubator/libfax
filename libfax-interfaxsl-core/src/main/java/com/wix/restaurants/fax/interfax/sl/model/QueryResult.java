@@ -11,10 +11,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(namespace = "interfax.net", name = "QueryResult")
 public class QueryResult {
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public Integer ResultCode;
 
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public FaxItems FaxItems;
 
     @Override

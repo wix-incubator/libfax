@@ -10,7 +10,7 @@ import java.util.List;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FaxItems {
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public List<FaxItemEx> FaxItem;
 
     @Override

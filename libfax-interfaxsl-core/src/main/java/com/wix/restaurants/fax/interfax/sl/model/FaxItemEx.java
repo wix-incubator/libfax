@@ -12,119 +12,119 @@ import java.math.BigDecimal;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(namespace = "interfax.net", name = "FaxItem")
 public class FaxItemEx {
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public Long TransactionID;
 
     /** Time when the transaction was originally submitted by the client. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String SubmitTime;
 
     /** End time of last of all transmission attempts. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String CompletionTime;
 
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String UserID;
 
     /** The text which was inserted into the Contacts property upon submission of the fax (available in select submission methods only). */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String Contact;
 
     /**
      * The fax number in a canonical format
      * @see http://www.interfax.net/en/dev/secure_lounge/reference/soap/special_formats
      */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String DestinationFax;
 
     /** Receiving party CSID (up to 20 characters). */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String RemoteCSID;
 
     /** Number of successfully sent pages. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public Short PagesSent;
 
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public Integer Status;
 
     /** Transmission time in seconds. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public Integer Duration;
 
     /** Original value as submitted. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String Subject;
 
     /** Number of pages originally submitted. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public Short PagesSubmitted;
 
     /** CSID of calling party. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String SenderCSID;
 
     /** Priority assigned to the fax. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public Short Priority;
 
     /** Number of units to be billed (pages or tenths of minutes). */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public BigDecimal Units;
 
     /** Monetary units, in account currency. Multiply this by 'Units' to get the cost of the fax. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public BigDecimal CostPerUnit;
 
     /** @see PageSize */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String PageSize;
 
     /** @see PageOrientation */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String PageOrientation;
 
     /** @see PageResolution */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String PageResolution;
 
     /** @see RenderingQuality */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String RenderingQuality;
 
     /** Header overlaid on fax. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String PageHeader;
 
     /** Retry attempts requested. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public Short RetriesToPerform;
 
     /** Retry attempts actually performed. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public Short TrialsPerformed;
 
     /** For internal use. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public Integer LocaleID;
 
     /** For internal use. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public Integer GMTBias;
 
     /** Interval in minutes between retries. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public Integer RetriesInterval;
 
     /** Reserved for future use. */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String UserData;
 
     /**
      * Was the fax sent with 'delete image after usage' set?
      * @see Boolean
      */
-    @XmlElement
+    @XmlElement(namespace = "interfax.net")
     public String DeleteAfterUsage;
 
     @Override
