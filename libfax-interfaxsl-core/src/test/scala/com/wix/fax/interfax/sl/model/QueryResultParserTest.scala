@@ -3,10 +3,10 @@ package com.wix.fax.interfax.sl.model
 import java.math.BigDecimal
 import java.util
 
-import org.specs2.mutable.SpecificationWithJUnit
+import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 
-class QueryResultParserTest extends SpecificationWithJUnit {
+class QueryResultParserTest extends SpecWithJUnit {
   trait Ctx extends Scope {
     private def createFaxItemEx() = {
       val faxItemEx = new FaxItemEx

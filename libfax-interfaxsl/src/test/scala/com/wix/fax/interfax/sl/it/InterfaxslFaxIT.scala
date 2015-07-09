@@ -11,15 +11,14 @@ import com.wix.fax.interfax.sl.{Credentials, InterfaxslFax, InterfaxslHelper}
 import com.wix.fax.model.{Fax, Status}
 import com.wix.fax.testkit.FaxDocumentBuilder
 import org.specs2.matcher._
-import org.specs2.mutable.SpecificationWithJUnit
+import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
-import org.specs2.time.NoTimeConversions
 
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 
-class InterfaxslFaxIT extends SpecificationWithJUnit with NoTimeConversions {
+class InterfaxslFaxIT extends SpecWithJUnit {
   private val interfaxslPort = 10006
 
   val driver = new InterfaxslDriver(port = interfaxslPort)

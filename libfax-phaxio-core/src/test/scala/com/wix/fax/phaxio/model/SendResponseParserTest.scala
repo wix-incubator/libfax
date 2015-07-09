@@ -1,9 +1,9 @@
 package com.wix.fax.phaxio.model
 
-import org.specs2.mutable.SpecificationWithJUnit
+import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 
-class SendResponseParserTest extends SpecificationWithJUnit {
+class SendResponseParserTest extends SpecWithJUnit {
   trait Ctx extends Scope {
     val someSendResponse = SendResponse(
       success = true,

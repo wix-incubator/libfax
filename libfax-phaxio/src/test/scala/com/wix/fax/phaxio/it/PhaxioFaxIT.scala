@@ -9,15 +9,14 @@ import com.wix.fax.phaxio.testkit.PhaxioDriver
 import com.wix.fax.phaxio.{Credentials, PhaxioFax, PhaxioHelper}
 import com.wix.fax.testkit.FaxDocumentBuilder
 import org.specs2.matcher._
-import org.specs2.mutable.SpecificationWithJUnit
+import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
-import org.specs2.time.NoTimeConversions
 
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 
-class PhaxioFaxIT extends SpecificationWithJUnit with NoTimeConversions {
+class PhaxioFaxIT extends SpecWithJUnit {
   private val phaxioPort = 10007
 
   val driver = new PhaxioDriver(port = phaxioPort)

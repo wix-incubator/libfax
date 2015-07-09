@@ -2,10 +2,10 @@ package com.wix.fax.interfax.sl.model
 
 import java.lang.{Long => JLong}
 
-import org.specs2.mutable.SpecificationWithJUnit
+import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 
-class SendCharFaxResponseParserTest extends SpecificationWithJUnit {
+class SendCharFaxResponseParserTest extends SpecWithJUnit {
   trait Ctx extends Scope {
     val someResponse = new SendCharFaxResponse()
     someResponse.value = 123L
