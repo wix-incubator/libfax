@@ -3,7 +3,7 @@ A simple Java/Scala outgoing fax [SPI](https://en.wikipedia.org/wiki/Service_pro
 * [InterFax SecureLounge](http://www.interfax.net/en/solutions/pci_fax/outbound_pci)
 * [Phaxio](https://www.phaxio.com/)
 
-This library is actively used by **Wix Restaurants** to deliver mission-critical food orders to your favorite restaurants.
+This library is actively used by [Wix.com](http://www.wix.com/) to deliver mission-critical food orders to your favorite restaurants.
 
 ## Usage
 In a nutshell, usage is as simple as instantiating one of the fax provider implementations, and calling `send` with some HTML and destination fax number. You get back a fax document ID that you can query with `retrieveStatus`.
