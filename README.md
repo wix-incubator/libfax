@@ -8,7 +8,7 @@ This library is actively used by [Wix.com](http://www.wix.com/) to deliver missi
 ## Usage
 In a nutshell, usage is as simple as instantiating one of the fax provider implementations, and calling `send` with some HTML and destination fax number. You get back a fax document ID that you can query with `retrieveStatus`.
 
-Of course, you'll need to have an account with the fax provider (sending faxes isn't free, you know).
+Of course, you'll need to have an account with the fax provider. Sending faxes isn't free, you know.
 
 For actual code, see the [IT](https://en.wikipedia.org/wiki/Integration_testing) suite that accompanies each fax provider implementation.
 
