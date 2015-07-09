@@ -4,7 +4,7 @@
 
     <groupId>com.wix.fax</groupId>
     <artifactId>libfax-phaxio-testkit</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Phaxio Test Kit</name>
     <description>Phaxio Test Kit</description>
@@ -36,7 +36,7 @@
     <parent>
         <groupId>com.wix.fax</groupId>
         <artifactId>libfax-all</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <dependencies>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.wix.fax</groupId>
             <artifactId>libfax-phaxio-core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.wix.hoopoe.http</groupId>
