@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.wixpress.openrest</groupId>
+    <groupId>com.wix.fax</groupId>
     <artifactId>libfax-phaxio-core</artifactId>
-    <name>Phaxio Core</name>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <description>Wix Restaurants Fax Phaxio Adapter Core</description>
+    <name>Phaxio Core</name>
+    <description>Phaxio Core</description>
 
     <developers>
         <developer>
@@ -34,10 +34,9 @@
     </developers>
 
     <parent>
-        <groupId>com.wixpress.common</groupId>
-        <artifactId>wix-scala-parent-ng</artifactId>
-        <version>100.0.0-SNAPSHOT</version>
-        <relativePath />
+        <groupId>com.wix.fax</groupId>
+        <artifactId>libfax-all</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -45,19 +44,9 @@
         <dependency>
             <groupId>org.json4s</groupId>
             <artifactId>json4s-native_${scala.dependencies.version}</artifactId>
+            <version>${org.json4js.version}</version>
         </dependency>
 
         <!-- Test Dependencies -->
-        <dependency>
-            <groupId>com.wixpress.common</groupId>
-            <artifactId>wix-framework-scala-test-dependencies</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-httpclient</groupId>
-                    <artifactId>commons-httpclient</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
     </dependencies>
 </project>

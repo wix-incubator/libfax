@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.wixpress.openrest</groupId>
+    <groupId>com.wix.fax</groupId>
     <artifactId>libfax-api</artifactId>
-    <name>Wix Restaurants Fax SPI</name>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <description>Wix Restaurants Fax SPI</description>
+    <name>Wix Fax SPI</name>
+    <description>Wix Fax SPI</description>
 
     <developers>
         <developer>
@@ -34,16 +34,15 @@
     </developers>
 
     <parent>
-        <groupId>com.wixpress.common</groupId>
-        <artifactId>wix-scala-parent-ng</artifactId>
-        <version>100.0.0-SNAPSHOT</version>
-        <relativePath />
+        <groupId>com.wix.fax</groupId>
+        <artifactId>libfax-all</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>com.twitter</groupId>
-            <artifactId>util-core_2.10</artifactId>
+            <artifactId>util-core_${scala.dependencies.version}</artifactId>
             <version>6.23.0</version>
         </dependency>
     </dependencies>

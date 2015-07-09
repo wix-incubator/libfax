@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.wixpress.openrest</groupId>
+    <groupId>com.wix.fax</groupId>
     <artifactId>libfax-phaxio-testkit</artifactId>
-    <name>Phaxio Test Kit</name>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <description>Wix Restaurants Fax Phaxio Adapter Test Kit</description>
+    <name>Phaxio Test Kit</name>
+    <description>Phaxio Test Kit</description>
 
     <developers>
         <developer>
@@ -34,27 +34,27 @@
     </developers>
 
     <parent>
-        <groupId>com.wixpress.common</groupId>
-        <artifactId>wix-scala-parent-ng</artifactId>
-        <version>100.0.0-SNAPSHOT</version>
-        <relativePath />
+        <groupId>com.wix.fax</groupId>
+        <artifactId>libfax-all</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <!-- Compile/runtime dependencies -->
         <dependency>
-            <groupId>com.wixpress.openrest</groupId>
+            <groupId>com.wix.fax</groupId>
             <artifactId>libfax-phaxio-core</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.wixpress.hoopoe</groupId>
-            <artifactId>hoopoe-http-test-kit</artifactId>
+            <groupId>com.wix.hoopoe.http</groupId>
+            <artifactId>http-testkit_${scala.dependencies.version}</artifactId>
+            <version>${com.wix.hoopoe.http.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.http-client</groupId>
             <artifactId>google-http-client</artifactId>
-            <version>1.20.0</version>
+            <version>${com.google.http.client.version}</version>
         </dependency>
 
         <!-- Test Dependencies -->
