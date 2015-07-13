@@ -19,6 +19,9 @@
         <module>libfax-phaxio</module>
         <module>libfax-phaxio-core</module>
         <module>libfax-phaxio-testkit</module>
+        <module>libfax-concordfax</module>
+        <module>libfax-concordfax-core</module>
+        <module>libfax-concordfax-testkit</module>
     </modules>
 
     <developers>

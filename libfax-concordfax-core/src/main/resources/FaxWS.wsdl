@@ -1,0 +1,985 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="FaxWS"
+ targetNamespace="https://ws.concordfax.com/fax/v5/FaxWS.wsdl"
+ xmlns:tns="https://ws.concordfax.com/fax/v5/FaxWS.wsdl"
+ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:FaxWS="urn:FaxWS"
+ xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/"
+ xmlns:MIME="http://schemas.xmlsoap.org/wsdl/mime/"
+ xmlns:DIME="http://schemas.xmlsoap.org/ws/2002/04/dime/wsdl/"
+ xmlns:WSDL="http://schemas.xmlsoap.org/wsdl/"
+ xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+<types>
+
+ <schema targetNamespace="urn:FaxWS"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:FaxWS="urn:FaxWS"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified"
+  attributeFormDefault="qualified">
+  <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+  <complexType name="FaxJob">
+   <sequence>
+     <element name="JobScheduleStartType" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="JobScheduleStartDate" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="JobExpiryDate" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderCSID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderName" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderCompany" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderPhone" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="CoverText" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="CoverName" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="CoverSubject" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="ReferenceId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="Resolution" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderFax" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SoftwareClient" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="NotifyType" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="NotifyIncludeDeliveredImage" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="NotifyDestination" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="NotifyAuthUser" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="NotifyAuthPassword" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="UserField1" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField2" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField3" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField4" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField5" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField6" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField7" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField8" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField9" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField10" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField11" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField12" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+   </sequence>
+  </complexType>
+  <complexType name="FaxBroadcastJob">
+   <sequence>
+     <element name="JobScheduleStartType" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="JobScheduleStartDate" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="JobExpiryDate" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderCSID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderName" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderCompany" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderPhone" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderAddress1" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderAddress2" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderCity" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderState" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderZip" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderCountry" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="CoverName" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="CoverSubject" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="Resolution" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="UserField1" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField2" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField3" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField4" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField5" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="ExceptionDestination" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SenderFax" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SoftwareClient" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="CoverText" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="UserField6" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField7" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField8" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField9" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField10" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField11" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="UserField12" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+   </sequence>
+  </complexType>
+  <complexType name="WSError">
+   <sequence>
+     <element name="ErrorCode" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="ErrorString" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+   </sequence>
+  </complexType>
+  <complexType name="FaxJobRecipient">
+   <sequence>
+     <element name="RecipFaxNumber" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipCompany" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipTitle" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipName" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipSecureCSID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipFirstName" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipLastName" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipAddress1" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipAddress2" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipCity" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipState" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipZipcode" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipCountry" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipVoiceNumber" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipField1" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipField2" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipField3" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipField4" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipField5" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipField6" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipField7" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipField8" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipField9" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipField10" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipField11" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="RecipField12" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+   </sequence>
+  </complexType>
+  <complexType name="FaxJobRecipients">
+   <sequence>
+    <element name="item" type="FaxWS:FaxJobRecipient" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+   </sequence>
+  </complexType>
+  <complexType name="FaxCover">
+   <sequence>
+     <element name="FaxCoverName" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+   </sequence>
+  </complexType>
+  <complexType name="FaxCoverList">
+   <sequence>
+    <element name="item" type="FaxWS:FaxCover" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+   </sequence>
+  </complexType>
+  <complexType name="FaxStatus">
+   <sequence>
+     <element name="FaxJobId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxJobStatusId" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="StatusDescription" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="Error" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+   </sequence>
+  </complexType>
+  <complexType name="RealTimeFaxStatus">
+   <sequence>
+     <element name="FaxJobId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxJobStatusId" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="StatusDescription" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientState" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientCurrentPageCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientTotalPageCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="Error" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+   </sequence>
+  </complexType>
+  <complexType name="RealTimeFaxStatusEx">
+   <sequence>
+     <element name="FaxJobId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxJobStatusId" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="StatusDescription" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientState" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientCurrentPageCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientTotalPageCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxDeliveryDateTime" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxDeliveryDuration" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="RemoteFaxCSID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="Error" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+   </sequence>
+  </complexType>
+  <complexType name="RealTimeFaxStatusEx2">
+   <sequence>
+     <element name="FaxJobId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxJobStatusId" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="StatusDescription" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientState" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientCurrentPageCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientTotalPageCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxDeliveryDateTime" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxDeliveryDuration" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="RemoteFaxCSID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="ReferenceId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="Error" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+   </sequence>
+  </complexType>
+  <complexType name="FaxStatusList">
+   <sequence>
+    <element name="item" type="FaxWS:FaxStatus" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+   </sequence>
+  </complexType>
+  <complexType name="RealTimeFaxStatusList">
+   <sequence>
+    <element name="item" type="FaxWS:RealTimeFaxStatus" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+   </sequence>
+  </complexType>
+  <complexType name="RealTimeFaxStatusExList">
+   <sequence>
+    <element name="item" type="FaxWS:RealTimeFaxStatusEx" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+   </sequence>
+  </complexType>
+  <complexType name="RealTimeFaxStatusEx2List">
+   <sequence>
+    <element name="item" type="FaxWS:RealTimeFaxStatusEx2" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+   </sequence>
+  </complexType>
+  <complexType name="FaxJobId">
+   <sequence>
+     <element name="JobId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+   </sequence>
+  </complexType>
+  <complexType name="FaxJobIds">
+   <sequence>
+    <element name="item" type="FaxWS:FaxJobId" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+   </sequence>
+  </complexType>
+  <complexType name="FaxJobFile">
+   <sequence>
+     <element name="FileIndex" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="FileTypeId" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="FileData" type="xsd:base64Binary" minOccurs="1" maxOccurs="1" nillable="false"/>
+   </sequence>
+  </complexType>
+  <complexType name="FaxJobFiles">
+   <sequence>
+    <element name="item" type="FaxWS:FaxJobFile" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+   </sequence>
+  </complexType>
+  <complexType name="DID">
+   <sequence>
+	 <element name="PortNumber" type="xsd:int" minOccurs="0" maxOccurs="1"/>
+     <element name="did" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="DefaultCSID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SendDeliveryConfirmation" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="ProcessInbound" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+     <element name="LineSpecificCredentials" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+   </sequence>
+  </complexType>
+  <complexType name="DIDList">
+   <sequence>
+    <element name="item" type="FaxWS:DID" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+   </sequence>
+  </complexType>
+  <complexType name="ConcordAccount">
+   <sequence>
+     <element name="UserId" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="Pin" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+     <element name="DefaultCSID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="SendDeliveryConfirmation" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="DIDList" type="FaxWS:DIDList" minOccurs="0" maxOccurs="1" nillable="true"/>
+   </sequence>
+  </complexType>
+  <complexType name="RecipientStatus">
+   <sequence>
+     <element name="FaxJobId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientId" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientStatusId" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientStatusDescription" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientName" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientCompanyName" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="DeliveryAttempts" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="DeliveryDuration" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="DeliverySpeed" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="ReceiveCSID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="PageCount" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxNumber" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="StartDate" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="EndDate" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+   </sequence>
+  </complexType>
+  <complexType name="RecipientStatusList">
+   <sequence>
+    <element name="item" type="FaxWS:RecipientStatus" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+   </sequence>
+  </complexType>
+  <complexType name="FaxBroadcastStatusRequest">
+   <sequence>
+     <element name="JobId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="StartRecipientId" type="xsd:int" minOccurs="1" maxOccurs="1" default="-1"/>
+     <element name="EndRecipientId" type="xsd:int" minOccurs="1" maxOccurs="1" default="-1"/>
+     <element name="RecipientStatus" type="xsd:int" minOccurs="1" maxOccurs="1" default="-1"/>
+   </sequence>
+  </complexType>
+  <!-- operation request element -->
+  <element name="GetFaxAccountSettings">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="GetFaxAccountSettingsResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+     <element name="AccountInfo" type="FaxWS:ConcordAccount" minOccurs="1" maxOccurs="1"/>
+     <element name="WSError" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="CheckService">
+   <complexType>
+    <sequence>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="CheckServiceResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="SimpleSendFax">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientName" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxNumber" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="TIFFJobFile" type="xsd:base64Binary" minOccurs="1" maxOccurs="1" nillable="false"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="SimpleFaxSendResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="SimpleGetFaxStatus">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="JobId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="SimpleFaxStatusResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:long" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="SendFax">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="Recipients" type="FaxWS:FaxJobRecipients" minOccurs="1" maxOccurs="1" nillable="false"/>
+     <element name="FaxJobFiles" type="FaxWS:FaxJobFiles" minOccurs="1" maxOccurs="1" nillable="false"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="FaxSendResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxJobIds" type="FaxWS:FaxJobIds" minOccurs="1" maxOccurs="1" nillable="false"/>
+     <element name="TTFP" type="xsd:long" minOccurs="1" maxOccurs="1"/>
+     <element name="WSError" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="SendFaxEx">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="Recipients" type="FaxWS:FaxJobRecipients" minOccurs="1" maxOccurs="1" nillable="false"/>
+     <element name="FaxJobFiles" type="FaxWS:FaxJobFiles" minOccurs="1" maxOccurs="1" nillable="false"/>
+     <element name="JobDetails" type="FaxWS:FaxJob" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="FaxSendExResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxJobIds" type="FaxWS:FaxJobIds" minOccurs="1" maxOccurs="1" nillable="false"/>
+     <element name="TTFP" type="xsd:long" minOccurs="1" maxOccurs="1"/>
+     <element name="WSError" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="SendFaxBroadcast">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="Recipients" type="FaxWS:FaxJobRecipients" minOccurs="1" maxOccurs="1" nillable="false"/>
+     <element name="FaxJobFiles" type="FaxWS:FaxJobFiles" minOccurs="1" maxOccurs="1" nillable="false"/>
+     <element name="JobDetails" type="FaxWS:FaxBroadcastJob" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="FaxBroadcastResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxJobId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="WSError" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="SendFaxBroadcastEx">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="CSVFile" type="xsd:base64Binary" minOccurs="1" maxOccurs="1" nillable="false"/>
+     <element name="FaxJobFiles" type="FaxWS:FaxJobFiles" minOccurs="1" maxOccurs="1" nillable="false"/>
+     <element name="JobDetails" type="FaxWS:FaxBroadcastJob" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="FaxBroadcastExResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxJobId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="WSError" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="GetFaxStatus">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxJobIds" type="FaxWS:FaxJobIds" minOccurs="1" maxOccurs="1" nillable="false"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="FaxStatusResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxStatusList" type="FaxWS:FaxStatusList" minOccurs="1" maxOccurs="1" nillable="false"/>
+     <element name="WSError" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="GetRealTimeFaxStatus">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxJobIds" type="FaxWS:FaxJobIds" minOccurs="1" maxOccurs="1" nillable="false"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="RealTimeFaxStatusResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxStatusList" type="FaxWS:RealTimeFaxStatusList" minOccurs="1" maxOccurs="1" nillable="false"/>
+     <element name="WSError" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="GetRealTimeFaxStatusEx">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxJobIds" type="FaxWS:FaxJobIds" minOccurs="1" maxOccurs="1" nillable="false"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="RealTimeFaxStatusExResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxStatusList" type="FaxWS:RealTimeFaxStatusExList" minOccurs="1" maxOccurs="1" nillable="false"/>
+     <element name="WSError" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="GetRealTimeFaxStatusEx2">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxJobIds" type="FaxWS:FaxJobIds" minOccurs="1" maxOccurs="1" nillable="false"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="RealTimeFaxStatusEx2Response">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxStatusList" type="FaxWS:RealTimeFaxStatusEx2List" minOccurs="1" maxOccurs="1" nillable="false"/>
+     <element name="WSError" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="GetFaxBroadcastReport">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="JobId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientType" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipAddress" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="GetFaxBroadcastReportResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+     <element name="WSError" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="CancelFax">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="JobId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="CancelFaxResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+     <element name="WSError" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="GetFaxCoverList">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="FaxCoverResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+     <element name="FaxCoverList" type="FaxWS:FaxCoverList" minOccurs="1" maxOccurs="1" nillable="false"/>
+     <element name="WSError" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation request element -->
+  <element name="GetFaxBroadcastStatus">
+   <complexType>
+    <sequence>
+     <element name="UserID" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="strPIN" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+     <element name="request" type="FaxWS:FaxBroadcastStatusRequest" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+  <!-- operation response element -->
+  <element name="FaxBroadcastStatusResponse">
+   <complexType>
+    <sequence>
+     <element name="return" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+     <element name="RecipientStatusList" type="FaxWS:RecipientStatusList" minOccurs="0" maxOccurs="1" nillable="true"/>
+     <element name="WSError" type="FaxWS:WSError" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+   </complexType>
+  </element>
+ </schema>
+
+</types>
+
+<message name="GetFaxAccountSettings">
+ <part name="parameters" element="FaxWS:GetFaxAccountSettings"/>
+</message>
+
+<message name="GetFaxAccountSettingsResponse">
+ <part name="parameters" element="FaxWS:GetFaxAccountSettingsResponse"/>
+</message>
+
+<message name="CheckService">
+ <part name="parameters" element="FaxWS:CheckService"/>
+</message>
+
+<message name="CheckServiceResponse">
+ <part name="parameters" element="FaxWS:CheckServiceResponse"/>
+</message>
+
+<message name="SimpleSendFax">
+ <part name="parameters" element="FaxWS:SimpleSendFax"/>
+</message>
+
+<message name="SimpleFaxSendResponse">
+ <part name="parameters" element="FaxWS:SimpleFaxSendResponse"/>
+</message>
+
+<message name="SimpleGetFaxStatus">
+ <part name="parameters" element="FaxWS:SimpleGetFaxStatus"/>
+</message>
+
+<message name="SimpleFaxStatusResponse">
+ <part name="parameters" element="FaxWS:SimpleFaxStatusResponse"/>
+</message>
+
+<message name="SendFax">
+ <part name="parameters" element="FaxWS:SendFax"/>
+</message>
+
+<message name="FaxSendResponse">
+ <part name="parameters" element="FaxWS:FaxSendResponse"/>
+</message>
+
+<message name="SendFaxEx">
+ <part name="parameters" element="FaxWS:SendFaxEx"/>
+</message>
+
+<message name="FaxSendExResponse">
+ <part name="parameters" element="FaxWS:FaxSendExResponse"/>
+</message>
+
+<message name="SendFaxBroadcast">
+ <part name="parameters" element="FaxWS:SendFaxBroadcast"/>
+</message>
+
+<message name="FaxBroadcastResponse">
+ <part name="parameters" element="FaxWS:FaxBroadcastResponse"/>
+</message>
+
+<message name="SendFaxBroadcastEx">
+ <part name="parameters" element="FaxWS:SendFaxBroadcastEx"/>
+</message>
+
+<message name="FaxBroadcastExResponse">
+ <part name="parameters" element="FaxWS:FaxBroadcastExResponse"/>
+</message>
+
+<message name="GetFaxStatus">
+ <part name="parameters" element="FaxWS:GetFaxStatus"/>
+</message>
+
+<message name="FaxStatusResponse">
+ <part name="parameters" element="FaxWS:FaxStatusResponse"/>
+</message>
+
+<message name="GetRealTimeFaxStatus">
+ <part name="parameters" element="FaxWS:GetRealTimeFaxStatus"/>
+</message>
+
+<message name="RealTimeFaxStatusResponse">
+ <part name="parameters" element="FaxWS:RealTimeFaxStatusResponse"/>
+</message>
+
+<message name="GetRealTimeFaxStatusEx">
+ <part name="parameters" element="FaxWS:GetRealTimeFaxStatusEx"/>
+</message>
+
+<message name="RealTimeFaxStatusExResponse">
+ <part name="parameters" element="FaxWS:RealTimeFaxStatusExResponse"/>
+</message>
+
+<message name="GetRealTimeFaxStatusEx2">
+ <part name="parameters" element="FaxWS:GetRealTimeFaxStatusEx2"/>
+</message>
+
+<message name="RealTimeFaxStatusEx2Response">
+ <part name="parameters" element="FaxWS:RealTimeFaxStatusEx2Response"/>
+</message>
+
+<message name="GetFaxBroadcastReport">
+ <part name="parameters" element="FaxWS:GetFaxBroadcastReport"/>
+</message>
+
+<message name="GetFaxBroadcastReportResponse">
+ <part name="parameters" element="FaxWS:GetFaxBroadcastReportResponse"/>
+</message>
+
+<message name="CancelFax">
+ <part name="parameters" element="FaxWS:CancelFax"/>
+</message>
+
+<message name="CancelFaxResponse">
+ <part name="parameters" element="FaxWS:CancelFaxResponse"/>
+</message>
+
+<message name="GetFaxCoverList">
+ <part name="parameters" element="FaxWS:GetFaxCoverList"/>
+</message>
+
+<message name="FaxCoverResponse">
+ <part name="parameters" element="FaxWS:FaxCoverResponse"/>
+</message>
+
+<message name="GetFaxBroadcastStatus">
+ <part name="parameters" element="FaxWS:GetFaxBroadcastStatus"/>
+</message>
+
+<message name="FaxBroadcastStatusResponse">
+ <part name="parameters" element="FaxWS:FaxBroadcastStatusResponse"/>
+</message>
+
+<portType name="FaxWSPortType">
+ <operation name="GetFaxAccountSettings">
+  <documentation>Service definition of function FaxWS__GetFaxAccountSettings</documentation>
+  <input message="tns:GetFaxAccountSettings"/>
+  <output message="tns:GetFaxAccountSettingsResponse"/>
+ </operation>
+ <operation name="CheckService">
+  <documentation>Service definition of function FaxWS__CheckService</documentation>
+  <input message="tns:CheckService"/>
+  <output message="tns:CheckServiceResponse"/>
+ </operation>
+ <operation name="SimpleSendFax">
+  <documentation>Service definition of function FaxWS__SimpleSendFax</documentation>
+  <input message="tns:SimpleSendFax"/>
+  <output message="tns:SimpleFaxSendResponse"/>
+ </operation>
+ <operation name="SimpleGetFaxStatus">
+  <documentation>Service definition of function FaxWS__SimpleGetFaxStatus</documentation>
+  <input message="tns:SimpleGetFaxStatus"/>
+  <output message="tns:SimpleFaxStatusResponse"/>
+ </operation>
+ <operation name="SendFax">
+  <documentation>Service definition of function FaxWS__SendFax</documentation>
+  <input message="tns:SendFax"/>
+  <output message="tns:FaxSendResponse"/>
+ </operation>
+ <operation name="SendFaxEx">
+  <documentation>Service definition of function FaxWS__SendFaxEx</documentation>
+  <input message="tns:SendFaxEx"/>
+  <output message="tns:FaxSendExResponse"/>
+ </operation>
+ <operation name="SendFaxBroadcast">
+  <documentation>Service definition of function FaxWS__SendFaxBroadcast</documentation>
+  <input message="tns:SendFaxBroadcast"/>
+  <output message="tns:FaxBroadcastResponse"/>
+ </operation>
+ <operation name="SendFaxBroadcastEx">
+  <documentation>Service definition of function FaxWS__SendFaxBroadcastEx</documentation>
+  <input message="tns:SendFaxBroadcastEx"/>
+  <output message="tns:FaxBroadcastExResponse"/>
+ </operation>
+ <operation name="GetFaxStatus">
+  <documentation>Service definition of function FaxWS__GetFaxStatus</documentation>
+  <input message="tns:GetFaxStatus"/>
+  <output message="tns:FaxStatusResponse"/>
+ </operation>
+ <operation name="GetRealTimeFaxStatus">
+  <documentation>Service definition of function FaxWS__GetRealTimeFaxStatus</documentation>
+  <input message="tns:GetRealTimeFaxStatus"/>
+  <output message="tns:RealTimeFaxStatusResponse"/>
+ </operation>
+ <operation name="GetRealTimeFaxStatusEx">
+  <documentation>Service definition of function FaxWS__GetRealTimeFaxStatusEx</documentation>
+  <input message="tns:GetRealTimeFaxStatusEx"/>
+  <output message="tns:RealTimeFaxStatusExResponse"/>
+ </operation>
+ <operation name="GetRealTimeFaxStatusEx2">
+  <documentation>Service definition of function FaxWS__GetRealTimeFaxStatusEx2</documentation>
+  <input message="tns:GetRealTimeFaxStatusEx2"/>
+  <output message="tns:RealTimeFaxStatusEx2Response"/>
+ </operation>
+ <operation name="GetFaxBroadcastReport">
+  <documentation>Service definition of function FaxWS__GetFaxBroadcastReport</documentation>
+  <input message="tns:GetFaxBroadcastReport"/>
+  <output message="tns:GetFaxBroadcastReportResponse"/>
+ </operation>
+ <operation name="CancelFax">
+  <documentation>Service definition of function FaxWS__CancelFax</documentation>
+  <input message="tns:CancelFax"/>
+  <output message="tns:CancelFaxResponse"/>
+ </operation>
+ <operation name="GetFaxCoverList">
+  <documentation>Service definition of function FaxWS__GetFaxCoverList</documentation>
+  <input message="tns:GetFaxCoverList"/>
+  <output message="tns:FaxCoverResponse"/>
+ </operation>
+ <operation name="GetFaxBroadcastStatus">
+  <documentation>Service definition of function FaxWS__GetFaxBroadcastStatus</documentation>
+  <input message="tns:GetFaxBroadcastStatus"/>
+  <output message="tns:FaxBroadcastStatusResponse"/>
+ </operation>
+</portType>
+
+<binding name="FaxWS" type="tns:FaxWSPortType">
+ <SOAP:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+ <operation name="GetFaxAccountSettings">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="CheckService">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="SimpleSendFax">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="SimpleGetFaxStatus">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="SendFax">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="SendFaxEx">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="SendFaxBroadcast">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="SendFaxBroadcastEx">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="GetFaxStatus">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="GetRealTimeFaxStatus">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="GetRealTimeFaxStatusEx">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="GetRealTimeFaxStatusEx2">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="GetFaxBroadcastReport">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="CancelFax">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="GetFaxCoverList">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+ <operation name="GetFaxBroadcastStatus">
+  <SOAP:operation soapAction=""/>
+  <input>
+     <SOAP:body  use="literal"/>
+  </input>
+  <output>
+     <SOAP:body  use="literal"/>
+  </output>
+ </operation>
+</binding>
+
+<service name="FaxWS">
+ <documentation>gSOAP 2.7.6c generated service definition</documentation>
+ <port name="FaxWS" binding="tns:FaxWS">
+  <SOAP:address location="https://ws.concordfax.com/fax/v5"/>
+ </port>
+</service>
+
+</definitions>
