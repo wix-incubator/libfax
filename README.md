@@ -2,6 +2,7 @@
 A simple Java/Scala outgoing fax [SPI](https://en.wikipedia.org/wiki/Service_provider_interface), including out-of-the-box implementations for
 * [InterFax SecureLounge](http://www.interfax.net/en/solutions/pci_fax/outbound_pci)
 * [Phaxio](https://www.phaxio.com/)
+* [Concord Fax](http://concordfax.com/)
 
 This library is actively used by [Wix.com](http://www.wix.com/) to deliver mission-critical food orders to your favorite restaurants.
 
