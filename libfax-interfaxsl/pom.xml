@@ -4,7 +4,7 @@
 
     <groupId>com.wix.fax</groupId>
     <artifactId>libfax-interfaxsl</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
     <name>InterFax SecureLounge</name>
     <description>InterFax SecureLounge</description>
@@ -36,7 +36,7 @@
     <parent>
         <groupId>com.wix.fax</groupId>
         <artifactId>libfax-all</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.1.0</version>
     </parent>
 
     <dependencies>
@@ -44,12 +44,12 @@
         <dependency>
             <groupId>com.wix.fax</groupId>
             <artifactId>libfax-api</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.wix.fax</groupId>
             <artifactId>libfax-interfaxsl-core</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.http-client</groupId>
@@ -61,13 +61,13 @@
         <dependency>
             <groupId>com.wix.fax</groupId>
             <artifactId>libfax-testkit</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.1.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.wix.fax</groupId>
             <artifactId>libfax-interfaxsl-testkit</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.1.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
