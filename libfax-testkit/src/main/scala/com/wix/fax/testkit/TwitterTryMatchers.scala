@@ -12,10 +12,6 @@ import org.specs2.matcher._
 import scala.reflect.ClassTag
 
 
-/** Defines matchers for Twitter's Try.
-  *
-  * @see [[Try]]
-  */
 trait TwitterTryMatchers { this: Matchers =>
   def beSuccessful[T](value: Matcher[T] = AlwaysMatcher()): Matcher[Try[T]] = {
     SuccessMatcher[T]() and
