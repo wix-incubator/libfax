@@ -9,6 +9,8 @@ import com.wix.fax.concordfax.model.{FileTypeIds, Statuses}
 import com.wix.fax.model.{Fax, Status}
 import com.wix.fax.{FaxErrorException, FaxException}
 
+import scala.collection.mutable
+
 object Endpoint {
   val production = "https://ws.concordfax.com/fax/v5"
 }
@@ -97,6 +99,17 @@ class ConcordfaxFax(endpoint: String = Endpoint.production,
   }
 
   override def retrieveStatuses(documentIds: Iterable[String]): Try[Map[String, String]] = {
-    ???
+    // Naive implementation using multiple calls to retrieveStatus.
+    // Optimization: use concordfax.getFaxStatus to query multiple document IDs at once.
+    Try {
+      val result = new mutable.HashMap[String, String]
+      for (documentId <- documentIds) {
+        retrieveStatus(documentId) match {
+          case Return(status) => result.put(documentId, status)
+          case Throw(e) => throw e
+        }
+      }
+      result.toMap
+    }
   }
 }
