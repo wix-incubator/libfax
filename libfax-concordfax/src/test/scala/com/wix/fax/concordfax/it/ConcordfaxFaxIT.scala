@@ -1,18 +1,15 @@
 package com.wix.fax.concordfax.it
 
 import com.google.api.client.http.javanet.NetHttpTransport
-import com.twitter.util.{Throw, Try}
 import com.wix.fax.FaxErrorException
 import com.wix.fax.concordfax.model.Statuses
 import com.wix.fax.concordfax.testkit.{ConcordfaxDriver, SendFaxResponse}
 import com.wix.fax.concordfax.{ConcordfaxFax, Credentials}
 import com.wix.fax.model.{Fax, Status}
 import com.wix.fax.testkit.FaxDocumentBuilder
-import org.specs2.matcher._
+import com.wix.fax.testkit.TwitterTryMatchers._
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
-
-import scala.reflect.ClassTag
 
 
 class ConcordfaxFaxIT extends SpecWithJUnit {
@@ -64,37 +61,6 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
     driver.resetProbe()
   }
 
-  def beSuccessful(string: Matcher[String] = AlwaysMatcher()): Matcher[Try[String]] = {
-    TwitterTrySuccessMatcher[String]() and
-      string ^^ { (_: Try[String]).get()}
-  }
-
-  def beFailure[T <: Throwable : ClassTag](msg: Matcher[String] = AlwaysMatcher(),
-                                           cause: Matcher[Throwable] = AlwaysMatcher()): Matcher[Try[String]] = {
-    TwitterTryFailureMatcher[String]() and
-      beAnInstanceOf[T] ^^ { (_: Try[String]) match {
-        case Throw(e) => e
-        case _ => failure("Expected a failure (exception), but was successful")
-      }} and
-      new Matcher[Try[String]] {
-        override def apply[S <: Try[String]](expectable: Expectable[S]): MatchResult[S] = {
-          expectable.value match {
-            case Throw(e) => createExpectable(e.getMessage).applyMatcher(msg).asInstanceOf[MatchResult[S]]
-            case _ => failure("Expected a failure (exception), but was successful", expectable)
-          }
-        }
-      } and
-      new Matcher[Try[String]] {
-        override def apply[S <: Try[String]](expectable: Expectable[S]): MatchResult[S] = {
-          expectable.value match {
-            case Throw(e) => createExpectable(e.getCause).applyMatcher(cause).asInstanceOf[MatchResult[S]]
-            case _ => failure("Expected a failure (exception), but was successful", expectable)
-          }
-        }
-      }
-  }
-
-
   "send request via Concord Fax" should {
     "successfully yield a fax document ID on valid request" in new Ctx {
       driver.aSendFaxFor(someCredentials, someTo, someFaxDocumentHtml) returns aSuccessfulSendFaxResponse
@@ -103,7 +69,7 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
         to = someTo,
         html = someFaxDocumentHtml
       ) must beSuccessful(
-        string = ===(someJobId)
+        value = ===(someJobId)
       )
     }
 
@@ -113,7 +79,7 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
       fax.send(
         to = someTo,
         html = someFaxDocumentHtml
-      ) must beFailure[FaxErrorException](
+      ) must beFailure[String, FaxErrorException](
         msg = ===(s"${aFailedSendFaxResponse.errorCode}|${aFailedSendFaxResponse.errorString}")
       )
     }
@@ -126,7 +92,7 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
       fax.retrieveStatus(
         documentId = someJobId
       ) must beSuccessful(
-        string = ===(Status.pending)
+        value = ===(Status.pending)
       )
     }
 
@@ -136,7 +102,7 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
       fax.retrieveStatus(
         documentId = someJobId
       ) must beSuccessful(
-        string = ===(Status.sent)
+        value = ===(Status.sent)
       )
     }
 
@@ -146,7 +112,7 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
       fax.retrieveStatus(
         documentId = someJobId
       ) must beSuccessful(
-        string = ===(Status.failed)
+        value = ===(Status.failed)
       )
     }
 
@@ -156,7 +122,7 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someJobId
-      ) must beFailure[FaxErrorException](
+      ) must beFailure[String, FaxErrorException](
         msg = contain(unknownStatus.toString)
       )
     }
@@ -166,11 +132,3 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
     driver.stopProbe()
   }
 }
-
-case class TwitterTrySuccessMatcher[T]() extends OptionLikeMatcher[Try, T, T]("a Success", (_: Try[T]).toOption)
-case class TwitterTryFailureMatcher[T]() extends OptionLikeMatcher[Try, T, Throwable](
-  "a Failure",
-  (_: Try[T]) match {
-    case Throw(e) => Option(e)
-    case _ => None
-  })
