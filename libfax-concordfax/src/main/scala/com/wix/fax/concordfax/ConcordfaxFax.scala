@@ -95,4 +95,8 @@ class ConcordfaxFax(endpoint: String = Endpoint.production,
       case Throw(e) => Throw(new FaxErrorException(e.getMessage, e))
     }
   }
+
+  override def retrieveStatuses(documentIds: Iterable[String]): Try[Map[String, String]] = {
+    ???
+  }
 }
