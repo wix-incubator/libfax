@@ -34,6 +34,15 @@ trait Fax {
    * @return the fax document's current status, or any kind of FaxException on error
    */
   def retrieveStatus(documentId: String): Try[String]
+
+  /**
+   * Retrieves the current statuses for multiple previously sent fax documents.
+   * Fax providers may implement this as a single request, or as a series of retrieveStatus requests.
+   *
+   * @param documentIds   The fax document IDs as returned by the send method.
+   * @return map between each fax document ID to its current status, or any kind of FaxException on error
+   */
+  def retrieveStatuses(documentIds: Iterable[String]): Try[Map[String, String]]
 }
 
 object Status {

@@ -57,6 +57,10 @@ class InterfaxslFax(requestFactory: HttpRequestFactory,
     }
   }
 
+  override def retrieveStatuses(documentIds: Iterable[String]): Try[Map[String, String]] = {
+    ???
+  }
+
   private def translateInterfaxStatusCode(statusCode: Int): String = {
     // @see http://www.interfax.net/en/dev/secure_lounge/reference/soap/statuscodes
     statusCode match {

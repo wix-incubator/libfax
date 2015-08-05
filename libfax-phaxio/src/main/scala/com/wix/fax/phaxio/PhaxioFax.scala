@@ -49,6 +49,10 @@ class PhaxioFax(requestFactory: HttpRequestFactory,
     }
   }
 
+  override def retrieveStatuses(documentIds: Iterable[String]): Try[Map[String, String]] = {
+    ???
+  }
+
   private def translatePhaxioStatusCode(status: String): String = {
     // @see http://www.phaxio.com/docs/statuses/
     status match {
