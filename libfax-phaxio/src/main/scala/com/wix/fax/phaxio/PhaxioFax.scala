@@ -6,6 +6,7 @@ import com.wix.fax.FaxErrorException
 import com.wix.fax.model.{Fax, Status}
 import com.wix.fax.phaxio.model.{Status => PhaxioStatus}
 
+import scala.collection.mutable
 import scala.concurrent.duration.Duration
 
 object Endpoint {
@@ -50,7 +51,16 @@ class PhaxioFax(requestFactory: HttpRequestFactory,
   }
 
   override def retrieveStatuses(documentIds: Iterable[String]): Try[Map[String, String]] = {
-    ???
+    Try {
+      val result = new mutable.HashMap[String, String]
+      for (documentId <- documentIds) {
+        retrieveStatus(documentId) match {
+          case Return(status) => result.put(documentId, status)
+          case Throw(e) => throw e
+        }
+      }
+      result.toMap
+    }
   }
 
   private def translatePhaxioStatusCode(status: String): String = {

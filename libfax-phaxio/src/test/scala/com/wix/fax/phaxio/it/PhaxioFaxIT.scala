@@ -56,15 +56,16 @@ class PhaxioFaxIT extends SpecWithJUnit {
       )
     }
 
-    def aFaxStatusRequest(): Map[String, String] = {
+    def aFaxStatusRequest(faxId: Long): Map[String, String] = {
       val helper = new PhaxioHelper
       helper.createFaxStatusParams(
         credentials = someCredentials,
-        id = someFaxId
+        id = faxId
       )
     }
 
     val someFaxId = 1234L
+    val someFaxId2 = 5678L
     def aSuccessfulSendResponse(): SendResponse = {
       SendResponse(
         success = true,
@@ -84,12 +85,12 @@ class PhaxioFaxIT extends SpecWithJUnit {
       )
     }
 
-    private def aFaxStatusResponse(status: String): FaxStatusResponse = {
+    private def aFaxStatusResponse(faxId: Long, status: String): FaxStatusResponse = {
       FaxStatusResponse(
         success = true,
         message = "some success message",
         data = Some(PhaxioFaxDocument(
-          id = someFaxId,
+          id = faxId,
           direction = Direction.sent,
           num_pages = 1,
           cost = 1,
@@ -104,16 +105,16 @@ class PhaxioFaxIT extends SpecWithJUnit {
       )
     }
 
-    def aPendingFaxStatusResponse(): FaxStatusResponse = {
-      aFaxStatusResponse(PhaxioStatus.inProgress)
+    def aPendingFaxStatusResponse(faxId: Long): FaxStatusResponse = {
+      aFaxStatusResponse(faxId, PhaxioStatus.inProgress)
     }
 
-    def aSentFaxStatusResponse(): FaxStatusResponse = {
-      aFaxStatusResponse(PhaxioStatus.success)
+    def aSentFaxStatusResponse(faxId: Long): FaxStatusResponse = {
+      aFaxStatusResponse(faxId, PhaxioStatus.success)
     }
 
-    def aSendFailedFaxStatusResponse(): FaxStatusResponse = {
-      aFaxStatusResponse(PhaxioStatus.failure)
+    def aSendFailedFaxStatusResponse(faxId: Long): FaxStatusResponse = {
+      aFaxStatusResponse(faxId, PhaxioStatus.failure)
     }
 
     def aFailedFaxStatusResponse(): FaxStatusResponse = {
@@ -151,8 +152,8 @@ class PhaxioFaxIT extends SpecWithJUnit {
   "retrieveStatus request via Phaxio" should {
     "successfully yield a 'pending' status on valid request" in new Ctx {
       driver.aFaxStatusFor(
-        aFaxStatusRequest()
-      ) returns aPendingFaxStatusResponse()
+        aFaxStatusRequest(someFaxId)
+      ) returns aPendingFaxStatusResponse(someFaxId)
 
       fax.retrieveStatus(
         documentId = someFaxId.toString
@@ -161,8 +162,8 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
     "successfully yield a 'sent' status on valid request" in new Ctx {
       driver.aFaxStatusFor(
-        aFaxStatusRequest()
-      ) returns aSentFaxStatusResponse()
+        aFaxStatusRequest(someFaxId)
+      ) returns aSentFaxStatusResponse(someFaxId)
 
       fax.retrieveStatus(
         documentId = someFaxId.toString
@@ -171,8 +172,8 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
     "successfully yield a 'failed' status on valid request" in new Ctx {
       driver.aFaxStatusFor(
-        aFaxStatusRequest()
-      ) returns aSendFailedFaxStatusResponse()
+        aFaxStatusRequest(someFaxId)
+      ) returns aSendFailedFaxStatusResponse(someFaxId)
 
       fax.retrieveStatus(
         documentId = someFaxId.toString
@@ -181,7 +182,40 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
     "gracefully fail on error" in new Ctx {
       driver.aFaxStatusFor(
-        aFaxStatusRequest()
+        aFaxStatusRequest(someFaxId)
+      ) returns aFailedFaxStatusResponse()
+
+      fax.retrieveStatus(
+        documentId = someFaxId.toString
+      ) must beFailure[String, FaxErrorException](msg = ===(someErrorMessage))
+    }
+  }
+
+  "retrieveStatuses request via Phaxio" should {
+    "successfully yield statuses on valid requests" in new Ctx {
+      driver.aFaxStatusFor(
+        aFaxStatusRequest(someFaxId)
+      ) returns aPendingFaxStatusResponse(someFaxId)
+      driver.aFaxStatusFor(
+        aFaxStatusRequest(someFaxId2)
+      ) returns aSentFaxStatusResponse(someFaxId2)
+
+      fax.retrieveStatuses(
+        documentIds = List(someFaxId.toString, someFaxId2.toString)
+      ) must beSuccessful(
+        value = ===(Map(
+          someFaxId -> Status.pending,
+          someFaxId -> Status.sent
+        )
+      ))
+    }
+
+    "gracefully fail on error" in new Ctx {
+      driver.aFaxStatusFor(
+        aFaxStatusRequest(someFaxId)
+      ) returns aPendingFaxStatusResponse(someFaxId)
+      driver.aFaxStatusFor(
+        aFaxStatusRequest(someFaxId2)
       ) returns aFailedFaxStatusResponse()
 
       fax.retrieveStatus(
