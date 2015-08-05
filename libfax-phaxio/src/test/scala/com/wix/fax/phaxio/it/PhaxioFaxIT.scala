@@ -1,19 +1,17 @@
 package com.wix.fax.phaxio.it
 
 import com.google.api.client.http.javanet.NetHttpTransport
-import com.twitter.util.{Throw, Try}
 import com.wix.fax.FaxErrorException
 import com.wix.fax.model.{Fax, Status}
 import com.wix.fax.phaxio.model.{Fax => PhaxioFaxDocument, FaxStatusResponse, SendResponse, Status => PhaxioStatus, _}
 import com.wix.fax.phaxio.testkit.PhaxioDriver
 import com.wix.fax.phaxio.{Credentials, PhaxioFax, PhaxioHelper}
 import com.wix.fax.testkit.FaxDocumentBuilder
-import org.specs2.matcher._
+import com.wix.fax.testkit.TwitterTryMatchers._
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 
 import scala.concurrent.duration._
-import scala.reflect.ClassTag
 
 
 class PhaxioFaxIT extends SpecWithJUnit {
@@ -128,36 +126,6 @@ class PhaxioFaxIT extends SpecWithJUnit {
     driver.resetProbe()
   }
 
-  def beSuccessful(string: Matcher[String] = AlwaysMatcher()): Matcher[Try[String]] = {
-    TwitterTrySuccessMatcher[String]() and
-      string ^^ { (_: Try[String]).get()}
-  }
-
-  def beFailure[T <: Throwable : ClassTag](msg: Matcher[String] = AlwaysMatcher(),
-                                           cause: Matcher[Throwable] = AlwaysMatcher()): Matcher[Try[String]] = {
-    TwitterTryFailureMatcher[String]() and
-      beAnInstanceOf[T] ^^ { (_: Try[String]) match {
-        case Throw(e) => e
-        case _ => failure("Expected a failure (exception), but was successful")
-      }} and
-      new Matcher[Try[String]] {
-        override def apply[S <: Try[String]](expectable: Expectable[S]): MatchResult[S] = {
-          expectable.value match {
-            case Throw(e) => createExpectable(e.getMessage).applyMatcher(msg).asInstanceOf[MatchResult[S]]
-            case _ => failure("Expected a failure (exception), but was successful", expectable)
-          }
-        }
-      } and
-      new Matcher[Try[String]] {
-        override def apply[S <: Try[String]](expectable: Expectable[S]): MatchResult[S] = {
-          expectable.value match {
-            case Throw(e) => createExpectable(e.getCause).applyMatcher(cause).asInstanceOf[MatchResult[S]]
-            case _ => failure("Expected a failure (exception), but was successful", expectable)
-          }
-        }
-      }
-  }
-
   "send request via Phaxio" should {
     "successfully yield a fax document ID on valid request" in new Ctx {
       driver.aSendFor(
@@ -166,7 +134,7 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.send(
         to = someTo,
-        html = someFaxDocumentHtml) must beSuccessful(string = ===(someFaxId.toString))
+        html = someFaxDocumentHtml) must beSuccessful(value = ===(someFaxId.toString))
     }
 
     "gracefully fail on error" in new Ctx {
@@ -176,7 +144,7 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.send(
         to = someTo,
-        html = someFaxDocumentHtml) must beFailure[FaxErrorException](msg = ===(someErrorMessage))
+        html = someFaxDocumentHtml) must beFailure[String, FaxErrorException](msg = ===(someErrorMessage))
     }
   }
 
@@ -188,7 +156,7 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someFaxId.toString
-      ) must beSuccessful(string = ===(Status.pending))
+      ) must beSuccessful(value = ===(Status.pending))
     }
 
     "successfully yield a 'sent' status on valid request" in new Ctx {
@@ -198,7 +166,7 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someFaxId.toString
-      ) must beSuccessful(string = ===(Status.sent))
+      ) must beSuccessful(value = ===(Status.sent))
     }
 
     "successfully yield a 'failed' status on valid request" in new Ctx {
@@ -208,7 +176,7 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someFaxId.toString
-      ) must beSuccessful(string = ===(Status.failed))
+      ) must beSuccessful(value = ===(Status.failed))
     }
 
     "gracefully fail on error" in new Ctx {
@@ -218,7 +186,7 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someFaxId.toString
-      ) must beFailure[FaxErrorException](msg = ===(someErrorMessage))
+      ) must beFailure[String, FaxErrorException](msg = ===(someErrorMessage))
     }
   }
 
@@ -226,11 +194,3 @@ class PhaxioFaxIT extends SpecWithJUnit {
     driver.stopProbe()
   }
 }
-
-case class TwitterTrySuccessMatcher[T]() extends OptionLikeMatcher[Try, T, T]("a Success", (_: Try[T]).toOption)
-case class TwitterTryFailureMatcher[T]() extends OptionLikeMatcher[Try, T, Throwable](
-  "a Failure",
-  (_: Try[T]) match {
-    case Throw(e) => Option(e)
-    case _ => None
-  })

@@ -3,19 +3,17 @@ package com.wix.fax.interfax.sl.it
 import java.util
 
 import com.google.api.client.http.javanet.NetHttpTransport
-import com.twitter.util.{Throw, Try}
 import com.wix.fax.FaxErrorException
 import com.wix.fax.interfax.sl.model._
 import com.wix.fax.interfax.sl.testkit.InterfaxslDriver
 import com.wix.fax.interfax.sl.{Credentials, InterfaxslFax, InterfaxslHelper}
 import com.wix.fax.model.{Fax, Status}
 import com.wix.fax.testkit.FaxDocumentBuilder
-import org.specs2.matcher._
+import com.wix.fax.testkit.TwitterTryMatchers._
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 
 import scala.concurrent.duration._
-import scala.reflect.ClassTag
 
 
 class InterfaxslFaxIT extends SpecWithJUnit {
@@ -113,36 +111,6 @@ class InterfaxslFaxIT extends SpecWithJUnit {
     driver.resetProbe()
   }
 
-  def beSuccessful(string: Matcher[String] = AlwaysMatcher()): Matcher[Try[String]] = {
-    TwitterTrySuccessMatcher[String]() and
-      string ^^ { (_: Try[String]).get()}
-  }
-
-  def beFailure[T <: Throwable : ClassTag](msg: Matcher[String] = AlwaysMatcher(),
-                                           cause: Matcher[Throwable] = AlwaysMatcher()): Matcher[Try[String]] = {
-    TwitterTryFailureMatcher[String]() and
-      beAnInstanceOf[T] ^^ { (_: Try[String]) match {
-        case Throw(e) => e
-        case _ => failure("Expected a failure (exception), but was successful")
-      }} and
-      new Matcher[Try[String]] {
-        override def apply[S <: Try[String]](expectable: Expectable[S]): MatchResult[S] = {
-          expectable.value match {
-            case Throw(e) => createExpectable(e.getMessage).applyMatcher(msg).asInstanceOf[MatchResult[S]]
-            case _ => failure("Expected a failure (exception), but was successful", expectable)
-          }
-        }
-      } and
-      new Matcher[Try[String]] {
-        override def apply[S <: Try[String]](expectable: Expectable[S]): MatchResult[S] = {
-          expectable.value match {
-            case Throw(e) => createExpectable(e.getCause).applyMatcher(cause).asInstanceOf[MatchResult[S]]
-            case _ => failure("Expected a failure (exception), but was successful", expectable)
-          }
-        }
-      }
-  }
-
   "send request via InterFax SecureLounge" should {
     "successfully yield a fax document ID on valid request" in new Ctx {
       driver.aSendCharFaxFor(
@@ -151,7 +119,7 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.send(
         to = someTo,
-        html = someFaxDocumentHtml) must beSuccessful(string = ===(someTransactionId.toString))
+        html = someFaxDocumentHtml) must beSuccessful(value = ===(someTransactionId.toString))
     }
 
     "gracefully fail on error" in new Ctx {
@@ -161,7 +129,7 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.send(
         to = someTo,
-        html = someFaxDocumentHtml) must beFailure[FaxErrorException](msg = contain(someErrorCode.toString))
+        html = someFaxDocumentHtml) must beFailure[String, FaxErrorException](msg = contain(someErrorCode.toString))
     }
   }
 
@@ -173,7 +141,7 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someTransactionId.toString
-      ) must beSuccessful(string = ===(Status.pending))
+      ) must beSuccessful(value = ===(Status.pending))
     }
 
     "successfully yield a 'sent' status on valid request" in new Ctx {
@@ -183,7 +151,7 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someTransactionId.toString
-      ) must beSuccessful(string = ===(Status.sent))
+      ) must beSuccessful(value = ===(Status.sent))
     }
 
     "successfully yield a 'failed' status on valid request" in new Ctx {
@@ -193,7 +161,7 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someTransactionId.toString
-      ) must beSuccessful(string = ===(Status.failed))
+      ) must beSuccessful(value = ===(Status.failed))
     }
 
     "gracefully fail on error" in new Ctx {
@@ -203,7 +171,7 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someTransactionId.toString
-      ) must beFailure[FaxErrorException](msg = contain(someErrorCode.toString))
+      ) must beFailure[String, FaxErrorException](msg = contain(someErrorCode.toString))
     }
   }
 
@@ -211,11 +179,3 @@ class InterfaxslFaxIT extends SpecWithJUnit {
     driver.stopProbe()
   }
 }
-
-case class TwitterTrySuccessMatcher[T]() extends OptionLikeMatcher[Try, T, T]("a Success", (_: Try[T]).toOption)
-case class TwitterTryFailureMatcher[T]() extends OptionLikeMatcher[Try, T, Throwable](
-  "a Failure",
-  (_: Try[T]) match {
-    case Throw(e) => Option(e)
-    case _ => None
-  })
