@@ -218,9 +218,11 @@ class PhaxioFaxIT extends SpecWithJUnit {
         aFaxStatusRequest(someFaxId2)
       ) returns aFailedFaxStatusResponse()
 
-      fax.retrieveStatus(
-        documentId = someFaxId.toString
-      ) must beFailure[String, FaxErrorException](msg = ===(someErrorMessage))
+      fax.retrieveStatuses(
+        documentIds = List(someFaxId.toString, someFaxId2.toString)
+      ) must beFailure[Map[String, String], FaxErrorException](
+        msg = ===(someErrorMessage)
+      )
     }
   }
 
