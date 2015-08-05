@@ -204,8 +204,8 @@ class PhaxioFaxIT extends SpecWithJUnit {
         documentIds = List(someFaxId.toString, someFaxId2.toString)
       ) must beSuccessful(
         value = ===(Map(
-          someFaxId -> Status.pending,
-          someFaxId2 -> Status.sent
+          someFaxId.toString -> Status.pending,
+          someFaxId2.toString -> Status.sent
         )
       ))
     }
