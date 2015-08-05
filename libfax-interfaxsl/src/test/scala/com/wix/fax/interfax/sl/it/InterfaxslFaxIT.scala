@@ -1,7 +1,5 @@
 package com.wix.fax.interfax.sl.it
 
-import java.util
-
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.wix.fax.FaxErrorException
 import com.wix.fax.interfax.sl.model._
@@ -13,6 +11,7 @@ import com.wix.fax.testkit.TwitterTryMatchers._
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 
+import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
 
@@ -54,6 +53,9 @@ class InterfaxslFaxIT extends SpecWithJUnit {
       )
     }
 
+    val someTransactionId = 1234L
+    val someTransactionId2 = 5678L
+
     def aQueryListRequest(): Map[String, String] = {
       val helper = new InterfaxslHelper
       helper.createQueryListParams(
@@ -62,7 +64,14 @@ class InterfaxslFaxIT extends SpecWithJUnit {
       )
     }
 
-    val someTransactionId = 1234L
+    def aQueryListRequestWithMultipleIds(): Map[String, String] = {
+      val helper = new InterfaxslHelper
+      helper.createQueryListParams(
+        credentials = someCredentials,
+        transactionIds = List(someTransactionId, someTransactionId2)
+      )
+    }
+
     def aSuccessfulSendCharFaxResponse(): SendCharFaxResponse = {
       val sendCharFaxResponse = new SendCharFaxResponse
       sendCharFaxResponse.value = someTransactionId
@@ -77,15 +86,22 @@ class InterfaxslFaxIT extends SpecWithJUnit {
     }
 
     private def aQueryResult(statusCode: Int): QueryResult = {
-      val faxItem = new FaxItemEx
-      faxItem.TransactionID = someTransactionId
-      faxItem.Status = statusCode
+      aQueryResultWithMultipleIds(Map(someTransactionId -> statusCode))
+    }
+
+    def aQueryResultWithMultipleIds(statusCodes: Map[Long, Int]): QueryResult = {
+      val faxItems = statusCodes.map {
+        case (transactionId, statusCode) =>
+          val faxItem = new FaxItemEx
+          faxItem.TransactionID = transactionId
+          faxItem.Status = statusCode
+          faxItem
+      }
 
       val queryResult = new QueryResult
       queryResult.ResultCode = ErrorCode.ok
       queryResult.FaxItems = new FaxItems
-      queryResult.FaxItems.FaxItem = new util.LinkedList
-      queryResult.FaxItems.FaxItem.add(faxItem)
+      queryResult.FaxItems.FaxItem = faxItems.toList.asJava
 
       queryResult
     }
@@ -172,6 +188,38 @@ class InterfaxslFaxIT extends SpecWithJUnit {
       fax.retrieveStatus(
         documentId = someTransactionId.toString
       ) must beFailure[String, FaxErrorException](msg = contain(someErrorCode.toString))
+    }
+  }
+
+  "retrieveStatuses request via InterFax SecureLounge" should {
+    "successfully yield statuses on valid request" in new Ctx {
+      driver.aQueryListFor(
+        aQueryListRequestWithMultipleIds()
+      ) returns aQueryResultWithMultipleIds(Map(
+        someTransactionId -> StatusCode.ready,
+        someTransactionId2 -> StatusCode.ok
+      ))
+
+      fax.retrieveStatuses(
+        documentIds = List(someTransactionId.toString, someTransactionId2.toString)
+      ) must beSuccessful(
+        value = ===(Map(
+          someTransactionId.toString -> Status.pending,
+          someTransactionId2.toString -> Status.sent
+        ))
+      )
+    }
+
+    "gracefully fail on error" in new Ctx {
+      driver.aQueryListFor(
+        aQueryListRequestWithMultipleIds()
+      ) returns aFailedQueryResult()
+
+      fax.retrieveStatuses(
+        documentIds = List(someTransactionId.toString, someTransactionId2.toString)
+      ) must beFailure[Map[String, String], FaxErrorException](
+        msg = contain(someErrorCode.toString)
+      )
     }
   }
 

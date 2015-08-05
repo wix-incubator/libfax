@@ -58,7 +58,14 @@ class InterfaxslFax(requestFactory: HttpRequestFactory,
   }
 
   override def retrieveStatuses(documentIds: Iterable[String]): Try[Map[String, String]] = {
-    ???
+    val transactionIds = documentIds.map { _.toLong }.toList
+    interfaxsl.queryList(transactionIds) match {
+      case Return(faxItems) =>
+        Return(faxItems.map {
+          faxItem => faxItem.TransactionID.toString -> translateInterfaxStatusCode(faxItem.Status)
+        }.toMap)
+      case Throw(e) => Throw(new FaxErrorException(e.getMessage, e))
+    }
   }
 
   private def translateInterfaxStatusCode(statusCode: Int): String = {
