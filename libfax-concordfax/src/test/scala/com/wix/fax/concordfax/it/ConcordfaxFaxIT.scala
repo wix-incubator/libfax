@@ -7,7 +7,6 @@ import com.wix.fax.concordfax.testkit.{ConcordfaxDriver, SendFaxResponse}
 import com.wix.fax.concordfax.{ConcordfaxFax, Credentials}
 import com.wix.fax.model.{Fax, Status}
 import com.wix.fax.testkit.FaxDocumentBuilder
-import com.wix.fax.testkit.TwitterTryMatchers._
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 
@@ -68,8 +67,8 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
       fax.send(
         to = someTo,
         html = someFaxDocumentHtml
-      ) must beSuccessful(
-        value = ===(someJobId)
+      ) must beASuccessfulTry(
+        check = ===(someJobId)
       )
     }
 
@@ -79,9 +78,9 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
       fax.send(
         to = someTo,
         html = someFaxDocumentHtml
-      ) must beFailure[String, FaxErrorException](
-        msg = ===(s"${aFailedSendFaxResponse.errorCode}|${aFailedSendFaxResponse.errorString}")
-      )
+      ) must beAFailedTry.like {
+        case e: FaxErrorException => e.message must beEqualTo(s"${aFailedSendFaxResponse.errorCode}|${aFailedSendFaxResponse.errorString}")
+      }
     }
   }
 
@@ -91,8 +90,8 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someJobId
-      ) must beSuccessful(
-        value = ===(Status.pending)
+      ) must beASuccessfulTry(
+        check = ===(Status.pending)
       )
     }
 
@@ -101,8 +100,8 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someJobId
-      ) must beSuccessful(
-        value = ===(Status.sent)
+      ) must beASuccessfulTry(
+        check = ===(Status.sent)
       )
     }
 
@@ -111,8 +110,8 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someJobId
-      ) must beSuccessful(
-        value = ===(Status.failed)
+      ) must beASuccessfulTry(
+        check = ===(Status.failed)
       )
     }
 
@@ -122,9 +121,9 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someJobId
-      ) must beFailure[String, FaxErrorException](
-        msg = contain(unknownStatus.toString)
-      )
+      ) must beAFailedTry.like {
+        case e: FaxErrorException => e.message must contain(unknownStatus.toString)
+      }
     }
   }
 

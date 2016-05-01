@@ -1,15 +1,15 @@
 package com.wix.fax.phaxio
 
 import com.google.api.client.http.HttpRequestFactory
-import com.twitter.util.{Return, Throw, Try}
 import com.wix.fax.FaxErrorException
 import com.wix.fax.model.{Fax, Status}
 import com.wix.fax.phaxio.model.{Status => PhaxioStatus}
 
 import scala.collection.mutable
 import scala.concurrent.duration.Duration
+import scala.util.{Failure, Success, Try}
 
-object Endpoint {
+object Endpoints {
   val production = "https://api.phaxio.com/v1/"
 }
 
@@ -21,9 +21,10 @@ object PhaxioFax {
  * Phaxio client.
  */
 class PhaxioFax(requestFactory: HttpRequestFactory,
-                endpoint: String = Endpoint.production,
+                endpoint: String = Endpoints.production,
                 connectTimeout: Option[Duration] = None,
                 readTimeout: Option[Duration] = None,
+                numberOfRetries: Int = 0,
                 credentials: Credentials,
                 cancelTimeout: Duration) extends Fax {
   private val phaxio = new PhaxioClient(
@@ -31,6 +32,7 @@ class PhaxioFax(requestFactory: HttpRequestFactory,
     endpoint = endpoint,
     connectTimeout = connectTimeout,
     readTimeout = readTimeout,
+    numberOfRetries = numberOfRetries,
     credentials = credentials
   )
 
@@ -38,15 +40,15 @@ class PhaxioFax(requestFactory: HttpRequestFactory,
 
   override def send(to: String, html: String): Try[String] = {
     phaxio.send(to, html, cancelTimeout) match {
-      case Return(faxInfo) => Return(faxInfo.faxId.toString)
-      case Throw(e) => Throw(new FaxErrorException(e.getMessage, e))
+      case Success(faxInfo) => Success(faxInfo.faxId.toString)
+      case Failure(e) => Failure(new FaxErrorException(e.getMessage, e))
     }
   }
 
   override def retrieveStatus(documentId: String): Try[String] = {
     phaxio.faxStatus(documentId.toLong) match {
-      case Return(fax) => Return(translatePhaxioStatusCode(fax.status))
-      case Throw(e) => Throw(new FaxErrorException(e.getMessage, e))
+      case Success(fax) => Success(translatePhaxioStatusCode(fax.status))
+      case Failure(e) => Failure(new FaxErrorException(e.getMessage, e))
     }
   }
 
@@ -55,8 +57,8 @@ class PhaxioFax(requestFactory: HttpRequestFactory,
       val result = new mutable.HashMap[String, String]
       for (documentId <- documentIds) {
         retrieveStatus(documentId) match {
-          case Return(status) => result.put(documentId, status)
-          case Throw(e) => throw e
+          case Success(status) => result.put(documentId, status)
+          case Failure(e) => throw e
         }
       }
       result.toMap

@@ -4,14 +4,14 @@ import javax.xml.namespace.QName
 import javax.xml.ws.{BindingProvider, Holder}
 
 import com.concordfax._
-import com.twitter.util.{Return, Throw, Try}
 import com.wix.fax.concordfax.model.{FileTypeIds, Statuses}
 import com.wix.fax.model.{Fax, Status}
 import com.wix.fax.{FaxErrorException, FaxException}
 
 import scala.collection.mutable
+import scala.util.{Failure, Success, Try}
 
-object Endpoint {
+object Endpoints {
   val production = "https://ws.concordfax.com/fax/v5"
 }
 
@@ -20,7 +20,7 @@ object ConcordfaxFax {
 }
 
 /** Concord Fax client. */
-class ConcordfaxFax(endpoint: String = Endpoint.production,
+class ConcordfaxFax(endpoint: String = Endpoints.production,
                     credentials: Credentials) extends Fax {
   /**
    * Creates a web-service port without downloading the WSDL.
@@ -73,9 +73,9 @@ class ConcordfaxFax(endpoint: String = Endpoint.production,
         throw new FaxErrorException(s"${wsError.value.getErrorCode}|${wsError.value.getErrorString}")
       }
     } match {
-      case Return(jobId) => Return(jobId)
-      case Throw(e: FaxException) => Throw(e)
-      case Throw(e) => Throw(new FaxErrorException(e.getMessage, e))
+      case Success(jobId) => Success(jobId)
+      case Failure(e: FaxException) => Failure(e)
+      case Failure(e) => Failure(new FaxErrorException(e.getMessage, e))
     }
   }
 
@@ -92,9 +92,9 @@ class ConcordfaxFax(endpoint: String = Endpoint.production,
         case _ => throw new FaxErrorException(s"Unknown ConcordFax status code: $status")
       }
     } match {
-      case Return(jobId) => Return(jobId)
-      case Throw(e: FaxException) => Throw(e)
-      case Throw(e) => Throw(new FaxErrorException(e.getMessage, e))
+      case Success(jobId) => Success(jobId)
+      case Failure(e: FaxException) => Failure(e)
+      case Failure(e) => Failure(new FaxErrorException(e.getMessage, e))
     }
   }
 
@@ -105,8 +105,8 @@ class ConcordfaxFax(endpoint: String = Endpoint.production,
       val result = new mutable.HashMap[String, String]
       for (documentId <- documentIds) {
         retrieveStatus(documentId) match {
-          case Return(status) => result.put(documentId, status)
-          case Throw(e) => throw e
+          case Success(status) => result.put(documentId, status)
+          case Failure(e) => throw e
         }
       }
       result.toMap

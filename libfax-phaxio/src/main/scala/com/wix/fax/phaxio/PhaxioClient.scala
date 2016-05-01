@@ -1,16 +1,17 @@
 package com.wix.fax.phaxio
 
 import com.google.api.client.http.{GenericUrl, HttpRequestFactory, HttpResponse, UrlEncodedContent}
-import com.twitter.util.{Return, Throw, Try}
 import com.wix.fax.phaxio.model.{Fax, FaxInfo, FaxStatusResponseParser, SendResponseParser}
 
 import scala.collection.JavaConversions._
 import scala.concurrent.duration.Duration
+import scala.util.{Failure, Success, Try}
 
 class PhaxioClient(requestFactory: HttpRequestFactory,
                    endpoint: String,
                    connectTimeout: Option[Duration] = None,
                    readTimeout: Option[Duration] = None,
+                   numberOfRetries: Int = 0,
                    credentials: Credentials) {
   private val helper = new PhaxioHelper
   private val sendResponseParser = new SendResponseParser
@@ -28,9 +29,9 @@ class PhaxioClient(requestFactory: HttpRequestFactory,
     val sendResponse = sendResponseParser.parse(sendResponseJson)
 
     if (sendResponse.success) {
-      Return(sendResponse.data.get)
+      Success(sendResponse.data.get)
     } else {
-      Throw(new PhaxioException(sendResponse.message))
+      Failure(new PhaxioException(sendResponse.message))
     }
   }
 
@@ -44,9 +45,9 @@ class PhaxioClient(requestFactory: HttpRequestFactory,
     val faxStatusResponse = faxStatusResponseParser.parse(faxStatusResponseJson)
 
     if (faxStatusResponse.success) {
-      Return(faxStatusResponse.data.get)
+      Success(faxStatusResponse.data.get)
     } else {
-      Throw(new PhaxioException(faxStatusResponse.message))
+      Failure(new PhaxioException(faxStatusResponse.message))
     }
   }
 
@@ -58,6 +59,7 @@ class PhaxioClient(requestFactory: HttpRequestFactory,
 
     connectTimeout foreach (connectTimeout => httpRequest.setConnectTimeout(connectTimeout.toMillis.toInt))
     readTimeout foreach (readTimeout => httpRequest.setReadTimeout(readTimeout.toMillis.toInt))
+    httpRequest.setNumberOfRetries(numberOfRetries)
 
     val httpResponse = httpRequest.execute()
     extractAndCloseResponse(httpResponse)

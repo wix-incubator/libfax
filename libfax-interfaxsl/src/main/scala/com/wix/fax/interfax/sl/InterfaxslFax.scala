@@ -1,17 +1,17 @@
 package com.wix.fax.interfax.sl
 
 import com.google.api.client.http.HttpRequestFactory
-import com.twitter.util.{Return, Throw, Try}
 import com.wix.fax.FaxErrorException
 import com.wix.fax.interfax.sl.model.StatusCode
 import com.wix.fax.model.{Fax, Status}
 
 import scala.concurrent.duration.Duration
+import scala.util.{Failure, Success, Try}
 
-object Endpoint {
+object Endpoints {
   /**
    * Secure Lounge endpoint for outbound PCI.
-   * @see http://www.interfax.net/en/solutions/pci_fax/outbound_pci
+   * @see <a href="https://www.interfax.net/en/dev/secure_lounge/reference/soap/endpoint">Service Endpoint</a>
    */
   val production = "https://ws-sl.fax.tc/Outbound.asmx/"
 }
@@ -28,9 +28,10 @@ object InterfaxslFax {
  * in their head section (InterFax ignores <meta charset="utf-8">).
  */
 class InterfaxslFax(requestFactory: HttpRequestFactory,
-                    endpoint: String = Endpoint.production,
+                    endpoint: String = Endpoints.production,
                     connectTimeout: Option[Duration] = None,
                     readTimeout: Option[Duration] = None,
+                    numberOfRetries: Int = 0,
                     credentials: Credentials) extends Fax {
 
   private val interfaxsl = new InterfaxslClient(
@@ -38,6 +39,7 @@ class InterfaxslFax(requestFactory: HttpRequestFactory,
     endpoint = endpoint,
     connectTimeout = connectTimeout,
     readTimeout = readTimeout,
+    numberOfRetries = numberOfRetries,
     credentials = credentials
   )
 
@@ -45,26 +47,26 @@ class InterfaxslFax(requestFactory: HttpRequestFactory,
 
   override def send(to: String, html: String): Try[String] = {
     interfaxsl.sendCharFax(to, html) match {
-      case Return(transactionId) => Return(transactionId.toString)
-      case Throw(e) => Throw(new FaxErrorException(e.getMessage, e))
+      case Success(transactionId) => Success(transactionId.toString)
+      case Failure(e) => Failure(new FaxErrorException(e.getMessage, e))
     }
   }
 
   override def retrieveStatus(documentId: String): Try[String] = {
     interfaxsl.queryList(List(documentId.toLong)) match {
-      case Return(faxItems) => Return(translateInterfaxStatusCode(faxItems.head.Status))
-      case Throw(e) => Throw(new FaxErrorException(e.getMessage, e))
+      case Success(faxItems) => Success(translateInterfaxStatusCode(faxItems.head.Status))
+      case Failure(e) => Failure(new FaxErrorException(e.getMessage, e))
     }
   }
 
   override def retrieveStatuses(documentIds: Iterable[String]): Try[Map[String, String]] = {
     val transactionIds = documentIds.map { _.toLong }.toList
     interfaxsl.queryList(transactionIds) match {
-      case Return(faxItems) =>
-        Return(faxItems.map {
+      case Success(faxItems) =>
+        Success(faxItems.map {
           faxItem => faxItem.TransactionID.toString -> translateInterfaxStatusCode(faxItem.Status)
         }.toMap)
-      case Throw(e) => Throw(new FaxErrorException(e.getMessage, e))
+      case Failure(e) => Failure(new FaxErrorException(e.getMessage, e))
     }
   }
 

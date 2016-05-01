@@ -7,7 +7,6 @@ import com.wix.fax.interfax.sl.testkit.InterfaxslDriver
 import com.wix.fax.interfax.sl.{Credentials, InterfaxslFax, InterfaxslHelper}
 import com.wix.fax.model.{Fax, Status}
 import com.wix.fax.testkit.FaxDocumentBuilder
-import com.wix.fax.testkit.TwitterTryMatchers._
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 
@@ -135,7 +134,10 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.send(
         to = someTo,
-        html = someFaxDocumentHtml) must beSuccessful(value = ===(someTransactionId.toString))
+        html = someFaxDocumentHtml
+      ) must beASuccessfulTry(
+        check = ===(someTransactionId.toString)
+      )
     }
 
     "gracefully fail on error" in new Ctx {
@@ -145,7 +147,10 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.send(
         to = someTo,
-        html = someFaxDocumentHtml) must beFailure[String, FaxErrorException](msg = contain(someErrorCode.toString))
+        html = someFaxDocumentHtml
+      ) must beAFailedTry.like {
+        case e: FaxErrorException => e.message must contain(someErrorCode.toString)
+      }
     }
   }
 
@@ -157,7 +162,9 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someTransactionId.toString
-      ) must beSuccessful(value = ===(Status.pending))
+      ) must beASuccessfulTry(
+        check = ===(Status.pending)
+      )
     }
 
     "successfully yield a 'sent' status on valid request" in new Ctx {
@@ -167,7 +174,9 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someTransactionId.toString
-      ) must beSuccessful(value = ===(Status.sent))
+      ) must beASuccessfulTry(
+        check = ===(Status.sent)
+      )
     }
 
     "successfully yield a 'failed' status on valid request" in new Ctx {
@@ -177,7 +186,9 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someTransactionId.toString
-      ) must beSuccessful(value = ===(Status.failed))
+      ) must beASuccessfulTry(
+        check = ===(Status.failed)
+      )
     }
 
     "gracefully fail on error" in new Ctx {
@@ -187,7 +198,9 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someTransactionId.toString
-      ) must beFailure[String, FaxErrorException](msg = contain(someErrorCode.toString))
+      ) must beAFailedTry.like {
+        case e: FaxErrorException => e.message must contain(someErrorCode.toString)
+      }
     }
   }
 
@@ -202,8 +215,8 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatuses(
         documentIds = List(someTransactionId.toString, someTransactionId2.toString)
-      ) must beSuccessful(
-        value = ===(Map(
+      ) must beASuccessfulTry(
+        check = ===(Map(
           someTransactionId.toString -> Status.pending,
           someTransactionId2.toString -> Status.sent
         ))
@@ -217,9 +230,9 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatuses(
         documentIds = List(someTransactionId.toString, someTransactionId2.toString)
-      ) must beFailure[Map[String, String], FaxErrorException](
-        msg = contain(someErrorCode.toString)
-      )
+      ) must beAFailedTry.like {
+        case e: FaxErrorException => e.message must contain(someErrorCode.toString)
+      }
     }
   }
 

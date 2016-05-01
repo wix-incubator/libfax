@@ -7,7 +7,6 @@ import com.wix.fax.phaxio.model.{Fax => PhaxioFaxDocument, FaxStatusResponse, Se
 import com.wix.fax.phaxio.testkit.PhaxioDriver
 import com.wix.fax.phaxio.{Credentials, PhaxioFax, PhaxioHelper}
 import com.wix.fax.testkit.FaxDocumentBuilder
-import com.wix.fax.testkit.TwitterTryMatchers._
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 
@@ -135,7 +134,10 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.send(
         to = someTo,
-        html = someFaxDocumentHtml) must beSuccessful(value = ===(someFaxId.toString))
+        html = someFaxDocumentHtml
+      ) must beASuccessfulTry(
+        check = ===(someFaxId.toString)
+      )
     }
 
     "gracefully fail on error" in new Ctx {
@@ -145,7 +147,10 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.send(
         to = someTo,
-        html = someFaxDocumentHtml) must beFailure[String, FaxErrorException](msg = ===(someErrorMessage))
+        html = someFaxDocumentHtml
+      ) must beAFailedTry.like {
+        case e: FaxErrorException => e.message must beEqualTo(someErrorMessage)
+      }
     }
   }
 
@@ -157,7 +162,9 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someFaxId.toString
-      ) must beSuccessful(value = ===(Status.pending))
+      ) must beASuccessfulTry(
+        check = ===(Status.pending)
+      )
     }
 
     "successfully yield a 'sent' status on valid request" in new Ctx {
@@ -167,7 +174,9 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someFaxId.toString
-      ) must beSuccessful(value = ===(Status.sent))
+      ) must beASuccessfulTry(
+        check = ===(Status.sent)
+      )
     }
 
     "successfully yield a 'failed' status on valid request" in new Ctx {
@@ -177,7 +186,9 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someFaxId.toString
-      ) must beSuccessful(value = ===(Status.failed))
+      ) must beASuccessfulTry(
+        check = ===(Status.failed)
+      )
     }
 
     "gracefully fail on error" in new Ctx {
@@ -187,7 +198,9 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatus(
         documentId = someFaxId.toString
-      ) must beFailure[String, FaxErrorException](msg = ===(someErrorMessage))
+      ) must beAFailedTry.like {
+        case e: FaxErrorException => e.message must beEqualTo(someErrorMessage)
+      }
     }
   }
 
@@ -202,8 +215,8 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatuses(
         documentIds = List(someFaxId.toString, someFaxId2.toString)
-      ) must beSuccessful(
-        value = ===(Map(
+      ) must beASuccessfulTry(
+        check = ===(Map(
           someFaxId.toString -> Status.pending,
           someFaxId2.toString -> Status.sent
         )
@@ -220,9 +233,9 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.retrieveStatuses(
         documentIds = List(someFaxId.toString, someFaxId2.toString)
-      ) must beFailure[Map[String, String], FaxErrorException](
-        msg = ===(someErrorMessage)
-      )
+      ) must beAFailedTry.like {
+        case e: FaxErrorException => e.message must beEqualTo(someErrorMessage)
+      }
     }
   }
 
