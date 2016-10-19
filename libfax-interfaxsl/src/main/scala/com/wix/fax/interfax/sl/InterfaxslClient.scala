@@ -13,19 +13,15 @@ class InterfaxslClient(requestFactory: HttpRequestFactory,
                        readTimeout: Option[Duration] = None,
                        numberOfRetries: Int = 0,
                        credentials: Credentials) {
-  private val helper = new InterfaxslHelper
-  private val sendCharFaxResponseParser = new SendCharFaxResponseParser
-  private val queryResultParser = new QueryResultParser
-
   def sendCharFax(to: String, html: String): Try[Long] = {
-    val params = helper.createSendCharFaxParams(
+    val params = InterfaxslHelper.createSendCharFaxParams(
       credentials = credentials,
       to = to,
       html = html
     )
 
     val responseXml = doRequest("SendCharFax", params)
-    val sendCharFaxResponse = sendCharFaxResponseParser.parse(responseXml)
+    val sendCharFaxResponse = SendCharFaxResponseParser.parse(responseXml)
 
     if (sendCharFaxResponse.value < 0) {
       Failure(translateInterfaxslError(sendCharFaxResponse.value.toInt))
@@ -35,13 +31,13 @@ class InterfaxslClient(requestFactory: HttpRequestFactory,
   }
 
   def queryList(transactionIds: List[Long]): Try[List[FaxItemEx]] = {
-    val params = helper.createQueryListParams(
+    val params = InterfaxslHelper.createQueryListParams(
       credentials = credentials,
       transactionIds = transactionIds
     )
 
     val responseXml = doRequest("QueryList", params)
-    val queryResult = queryResultParser.parse(responseXml)
+    val queryResult = QueryResultParser.parse(responseXml)
 
     if (queryResult.ResultCode < 0) {
       Failure(translateInterfaxslError(queryResult.ResultCode))
@@ -73,6 +69,6 @@ class InterfaxslClient(requestFactory: HttpRequestFactory,
   }
 
   private def translateInterfaxslError(errorCode: Int): InterfaxslException = {
-    new InterfaxslException(s"Interfax SecureLounge error $errorCode: ${ErrorCode.descriptions.getOrElse(errorCode, "Unknown error")}")
+    InterfaxslException(s"Interfax SecureLounge error $errorCode: ${ErrorCode.descriptions.getOrElse(errorCode, "Unknown error")}")
   }
 }

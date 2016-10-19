@@ -12,8 +12,6 @@ import scala.collection.mutable
 
 class InterfaxslDriver(port: Int) {
   private val probe = new EmbeddedHttpProbe(port, EmbeddedHttpProbe.NotFoundHandler)
-  private val sendCharFaxResponseParser = new SendCharFaxResponseParser
-  private val queryResultParser = new QueryResultParser
 
   def startProbe() {
     probe.doStart()
@@ -67,13 +65,13 @@ class InterfaxslDriver(port: Int) {
 
   class SendCharFaxCtx(params: Map[String, String]) extends Ctx("/SendCharFax", params) {
     def returns(sendCharFaxResponse: SendCharFaxResponse): Unit = {
-      returnsXml(sendCharFaxResponseParser.stringify(sendCharFaxResponse))
+      returnsXml(SendCharFaxResponseParser.stringify(sendCharFaxResponse))
     }
   }
 
   class QueryListCtx(params: Map[String, String]) extends Ctx("/QueryList", params) {
     def returns(queryResult: QueryResult): Unit = {
-      returnsXml(queryResultParser.stringify(queryResult))
+      returnsXml(QueryResultParser.stringify(queryResult))
     }
   }
 }

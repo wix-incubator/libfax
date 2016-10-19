@@ -3,10 +3,10 @@ package com.wix.fax.interfax.sl.model
 import java.io.{StringReader, StringWriter}
 import javax.xml.bind.JAXBContext
 
-class SendCharFaxResponseParser {
-  val context = JAXBContext.newInstance(classOf[SendCharFaxResponse])
-  val marshaller = context.createMarshaller()
-  val unmarshaller = context.createUnmarshaller()
+object SendCharFaxResponseParser {
+  private val context = JAXBContext.newInstance(classOf[SendCharFaxResponse])
+  private val marshaller = context.createMarshaller()
+  private val unmarshaller = context.createUnmarshaller()
 
   def stringify(obj: SendCharFaxResponse): String = {
     val writer = new StringWriter()

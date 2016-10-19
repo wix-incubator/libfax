@@ -3,7 +3,7 @@ package com.wix.fax.phaxio.it
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.wix.fax.FaxErrorException
 import com.wix.fax.model.{Fax, Status}
-import com.wix.fax.phaxio.model.{Fax => PhaxioFaxDocument, FaxStatusResponse, SendResponse, Status => PhaxioStatus, _}
+import com.wix.fax.phaxio.model.{FaxStatusResponse, SendResponse, Fax => PhaxioFaxDocument, Status => PhaxioStatus, _}
 import com.wix.fax.phaxio.testkit.PhaxioDriver
 import com.wix.fax.phaxio.{Credentials, PhaxioFax, PhaxioHelper}
 import com.wix.fax.testkit.FaxDocumentBuilder
@@ -46,8 +46,7 @@ class PhaxioFaxIT extends SpecWithJUnit {
     )
 
     def aSendRequest(): Map[String, String] = {
-      val helper = new PhaxioHelper
-      helper.createSendParams(
+      PhaxioHelper.createSendParams(
         credentials = someCredentials,
         to = someTo,
         html = someFaxDocumentHtml,
@@ -56,8 +55,7 @@ class PhaxioFaxIT extends SpecWithJUnit {
     }
 
     def aFaxStatusRequest(faxId: Long): Map[String, String] = {
-      val helper = new PhaxioHelper
-      helper.createFaxStatusParams(
+      PhaxioHelper.createFaxStatusParams(
         credentials = someCredentials,
         id = faxId
       )

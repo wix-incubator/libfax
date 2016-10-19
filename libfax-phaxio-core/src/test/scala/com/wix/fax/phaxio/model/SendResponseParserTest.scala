@@ -13,14 +13,12 @@ class SendResponseParserTest extends SpecWithJUnit {
         faxId = 456L
       ))
     )
-
-    val parser = new SendResponseParser
   }
 
   "stringify and then parse" should {
     "yield an object similar to the original one" in new Ctx {
-      val json = parser.stringify(someSendResponse)
-      parser.parse(json) must beEqualTo(someSendResponse)
+      val json = SendResponseParser.stringify(someSendResponse)
+      SendResponseParser.parse(json) must beEqualTo(someSendResponse)
     }
   }
 }

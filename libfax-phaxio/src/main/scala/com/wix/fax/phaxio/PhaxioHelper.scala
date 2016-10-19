@@ -4,7 +4,7 @@ import com.wix.fax.phaxio.model.{Params, StringDataType}
 
 import scala.concurrent.duration.Duration
 
-class PhaxioHelper {
+object PhaxioHelper {
   def createSendParams(credentials: Credentials, to: String, html: String, cancelTimeout: Duration): Map[String, String] = Map(
     Params.apiKey -> credentials.key,
     Params.apiSecret -> credentials.secret,

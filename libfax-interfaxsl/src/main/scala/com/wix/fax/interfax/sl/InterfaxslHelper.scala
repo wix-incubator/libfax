@@ -2,7 +2,7 @@ package com.wix.fax.interfax.sl
 
 import com.wix.fax.interfax.sl.model.{FileType, Params}
 
-class InterfaxslHelper {
+object InterfaxslHelper {
   def createSendCharFaxParams(credentials: Credentials, to: String, html: String): Map[String, String] = Map(
     Params.username -> credentials.username,
     Params.password -> credentials.password,

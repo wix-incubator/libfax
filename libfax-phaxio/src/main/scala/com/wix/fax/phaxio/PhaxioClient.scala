@@ -13,12 +13,9 @@ class PhaxioClient(requestFactory: HttpRequestFactory,
                    readTimeout: Option[Duration] = None,
                    numberOfRetries: Int = 0,
                    credentials: Credentials) {
-  private val helper = new PhaxioHelper
-  private val sendResponseParser = new SendResponseParser
-  private val faxStatusResponseParser = new FaxStatusResponseParser
 
   def send(to: String, html: String, cancelTimeout: Duration): Try[FaxInfo] = {
-    val params = helper.createSendParams(
+    val params = PhaxioHelper.createSendParams(
       credentials = credentials,
       to = to,
       html = html,
@@ -26,28 +23,28 @@ class PhaxioClient(requestFactory: HttpRequestFactory,
     )
 
     val sendResponseJson = doRequest("send", params)
-    val sendResponse = sendResponseParser.parse(sendResponseJson)
+    val sendResponse = SendResponseParser.parse(sendResponseJson)
 
     if (sendResponse.success) {
       Success(sendResponse.data.get)
     } else {
-      Failure(new PhaxioException(sendResponse.message))
+      Failure(PhaxioException(sendResponse.message))
     }
   }
 
   def faxStatus(id: Long): Try[Fax] = {
-    val params = helper.createFaxStatusParams(
+    val params = PhaxioHelper.createFaxStatusParams(
       credentials = credentials,
       id = id
     )
 
     val faxStatusResponseJson = doRequest("faxStatus", params)
-    val faxStatusResponse = faxStatusResponseParser.parse(faxStatusResponseJson)
+    val faxStatusResponse = FaxStatusResponseParser.parse(faxStatusResponseJson)
 
     if (faxStatusResponse.success) {
       Success(faxStatusResponse.data.get)
     } else {
-      Failure(new PhaxioException(faxStatusResponse.message))
+      Failure(PhaxioException(faxStatusResponse.message))
     }
   }
 

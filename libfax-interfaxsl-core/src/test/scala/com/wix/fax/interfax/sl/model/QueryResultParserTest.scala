@@ -53,14 +53,12 @@ class QueryResultParserTest extends SpecWithJUnit {
     }
 
     val someQueryResult = createQueryResult()
-
-    val parser = new QueryResultParser
   }
 
   "stringify and then parse" should {
     "yield an object similar to the original one" in new Ctx {
-      val xml = parser.stringify(someQueryResult)
-      parser.parse(xml) must beEqualTo(someQueryResult)
+      val xml = QueryResultParser.stringify(someQueryResult)
+      QueryResultParser.parse(xml) must beEqualTo(someQueryResult)
     }
   }
 }

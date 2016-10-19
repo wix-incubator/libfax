@@ -44,8 +44,7 @@ class InterfaxslFaxIT extends SpecWithJUnit {
     )
 
     def aSendCharFaxRequest(): Map[String, String] = {
-      val helper = new InterfaxslHelper
-      helper.createSendCharFaxParams(
+      InterfaxslHelper.createSendCharFaxParams(
         credentials = someCredentials,
         to = someTo,
         html = someFaxDocumentHtml
@@ -56,16 +55,14 @@ class InterfaxslFaxIT extends SpecWithJUnit {
     val someTransactionId2 = 5678L
 
     def aQueryListRequest(): Map[String, String] = {
-      val helper = new InterfaxslHelper
-      helper.createQueryListParams(
+      InterfaxslHelper.createQueryListParams(
         credentials = someCredentials,
         transactionIds = List(someTransactionId)
       )
     }
 
     def aQueryListRequestWithMultipleIds(): Map[String, String] = {
-      val helper = new InterfaxslHelper
-      helper.createQueryListParams(
+      InterfaxslHelper.createQueryListParams(
         credentials = someCredentials,
         transactionIds = List(someTransactionId, someTransactionId2)
       )

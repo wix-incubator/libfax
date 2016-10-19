@@ -27,14 +27,12 @@ class FaxStatusResponseParserTest extends SpecWithJUnit {
         ))
       ))
     )
-
-    val parser = new FaxStatusResponseParser
   }
 
   "stringify and then parse" should {
     "yield an object similar to the original one" in new Ctx {
-      val json = parser.stringify(someFaxStatusResponse)
-      parser.parse(json) must beEqualTo(someFaxStatusResponse)
+      val json = FaxStatusResponseParser.stringify(someFaxStatusResponse)
+      FaxStatusResponseParser.parse(json) must beEqualTo(someFaxStatusResponse)
     }
   }
 }

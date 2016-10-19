@@ -12,8 +12,6 @@ import scala.collection.mutable
 
 class PhaxioDriver(port: Int) {
   private val probe = new EmbeddedHttpProbe(port, EmbeddedHttpProbe.NotFoundHandler)
-  private val sendResponseParser = new SendResponseParser
-  private val faxStatusResponseParser = new FaxStatusResponseParser
 
   def startProbe() {
     probe.doStart()
@@ -67,13 +65,13 @@ class PhaxioDriver(port: Int) {
 
   class SendCtx(params: Map[String, String]) extends Ctx("/send", params) {
     def returns(sendResponse: SendResponse): Unit = {
-      returnsJson(sendResponseParser.stringify(sendResponse))
+      returnsJson(SendResponseParser.stringify(sendResponse))
     }
   }
 
   class FaxStatusCtx(params: Map[String, String]) extends Ctx("/faxStatus", params) {
     def returns(faxStatusResponse: FaxStatusResponse): Unit = {
-      returnsJson(faxStatusResponseParser.stringify(faxStatusResponse))
+      returnsJson(FaxStatusResponseParser.stringify(faxStatusResponse))
     }
   }
 }

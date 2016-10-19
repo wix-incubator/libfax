@@ -3,8 +3,8 @@ package com.wix.fax.phaxio.model
 import org.json4s.DefaultFormats
 import org.json4s.native.Serialization
 
-class FaxStatusResponseParser {
-  implicit val formats = DefaultFormats
+object FaxStatusResponseParser {
+  private implicit val formats = DefaultFormats
 
   def stringify(obj: FaxStatusResponse): String = {
     Serialization.write(obj)
