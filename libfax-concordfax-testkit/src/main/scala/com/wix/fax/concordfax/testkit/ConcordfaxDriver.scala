@@ -1,31 +1,27 @@
 package com.wix.fax.concordfax.testkit
 
-import java.io.StringWriter
-
-import com.google.api.client.util.Base64
-import com.wix.fax.concordfax.Credentials
-import com.wix.fax.concordfax.model.FileTypeIds
-import com.wix.hoopoe.http.testkit.EmbeddedHttpProbe
-import spray.http._
 
 import scala.xml.{Node, XML}
+import java.io.StringWriter
+import akka.http.scaladsl.model.Uri.Path
+import akka.http.scaladsl.model._
+import com.google.api.client.util.Base64
+import com.wix.e2e.http.api.StubWebServer
+import com.wix.e2e.http.client.extractors.HttpMessageExtractors._
+import com.wix.e2e.http.server.WebServerFactory._
+import com.wix.fax.concordfax.Credentials
+import com.wix.fax.concordfax.model.FileTypeIds
+
 
 case class SendFaxResponse(`return`: Boolean, jobId: String, errorCode: Int, errorString: String)
 
 class ConcordfaxDriver(port: Int) {
-  private val probe = new EmbeddedHttpProbe(port, EmbeddedHttpProbe.NotFoundHandler)
+  private val server: StubWebServer = aStubWebServer.onPort(port).build
 
-  def startProbe() {
-    probe.doStart()
-  }
+  def start(): Unit = server.start
+  def stop(): Unit = server.stop
+  def reset(): Unit = server.replaceWith()
 
-  def stopProbe() {
-    probe.doStop()
-  }
-
-  def resetProbe() {
-    probe.handlers.clear()
-  }
 
   def aSimpleGetFaxStatusFor(credentials: Credentials, jobId: String): SimpleGetFaxStatusCtx = {
     new SimpleGetFaxStatusCtx(credentials, jobId)
@@ -35,6 +31,7 @@ class ConcordfaxDriver(port: Int) {
     new SendFaxCtx(credentials, to, html)
   }
 
+
   abstract class Ctx {
     private def nodeToString(node: Node) = {
       val writer = new StringWriter()
@@ -43,21 +40,21 @@ class ConcordfaxDriver(port: Int) {
     }
 
     protected def returnsXml(responseXml: Node): Unit = {
-      probe.handlers += {
+      server.appendAll {
         case HttpRequest(
-        HttpMethods.POST,
-        Uri.Path("/"),
-        _,
-        entity,
-        _) if isStubbedRequestEntity(entity) =>
-          HttpResponse(
-            status = StatusCodes.OK,
-            entity = HttpEntity(new ContentType(MediaTypes.`text/xml`, Some(HttpCharsets.`UTF-8`)), nodeToString(responseXml)))
+          HttpMethods.POST,
+          Path("/"),
+          _,
+          entity,
+          _) if isStubbedRequestEntity(entity) =>
+            HttpResponse(
+              status = StatusCodes.OK,
+              entity = HttpEntity(ContentTypes.`text/xml(UTF-8)`, nodeToString(responseXml)))
       }
     }
 
     private def isStubbedRequestEntity(entity: HttpEntity): Boolean = {
-      getRequestXml == entity.asString
+      getRequestXml == entity.extractAsString
     }
 
     protected def getRequestXml: String
@@ -103,8 +100,7 @@ class ConcordfaxDriver(port: Int) {
               </WSError>
             </FaxSendResponse>
           </S:Body>
-        </S:Envelope>
-      )
+        </S:Envelope>)
     }
 
     protected override def getRequestXml: String = {

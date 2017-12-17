@@ -1,55 +1,47 @@
 package com.wix.fax.phaxio.testkit
 
-import java.util.{List => JList}
-
-import com.google.api.client.http.UrlEncodedParser
-import com.wix.fax.phaxio.model.{FaxStatusResponse, FaxStatusResponseParser, SendResponse, SendResponseParser}
-import com.wix.hoopoe.http.testkit.EmbeddedHttpProbe
-import spray.http._
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable
+import java.util.{List => JList}
+import akka.http.scaladsl.model._
+import com.google.api.client.http.UrlEncodedParser
+import com.wix.e2e.http.api.StubWebServer
+import com.wix.e2e.http.client.extractors.HttpMessageExtractors._
+import com.wix.e2e.http.server.WebServerFactory.aStubWebServer
+import com.wix.fax.phaxio.model.{FaxStatusResponse, FaxStatusResponseParser, SendResponse, SendResponseParser}
+
 
 class PhaxioDriver(port: Int) {
-  private val probe = new EmbeddedHttpProbe(port, EmbeddedHttpProbe.NotFoundHandler)
+  private val server: StubWebServer = aStubWebServer.onPort(port).build
 
-  def startProbe() {
-    probe.doStart()
-  }
+  def start(): Unit = server.start
+  def stop(): Unit = server.stop
+  def reset(): Unit = server.replaceWith()
 
-  def stopProbe() {
-    probe.doStop()
-  }
 
-  def resetProbe() {
-    probe.handlers.clear()
-  }
+  def aSendFor(params: Map[String, String]): SendCtx = new SendCtx(params)
 
-  def aSendFor(params: Map[String, String]): SendCtx = {
-    new SendCtx(params)
-  }
+  def aFaxStatusFor(params: Map[String, String]): FaxStatusCtx = new FaxStatusCtx(params)
 
-  def aFaxStatusFor(params: Map[String, String]): FaxStatusCtx = {
-    new FaxStatusCtx(params)
-  }
 
   abstract class Ctx(resource: String, params: Map[String, String]) {
     protected def returnsJson(responseJson: String): Unit = {
-      probe.handlers += {
+      server.appendAll {
         case HttpRequest(
-        HttpMethods.POST,
-        Uri.Path(`resource`),
-        _,
-        entity,
-        _) if isStubbedRequestEntity(entity) =>
-          HttpResponse(
-            status = StatusCodes.OK,
-            entity = HttpEntity(ContentTypes.`application/json`, responseJson))
+          HttpMethods.POST,
+          Uri.Path(`resource`),
+          _,
+          entity,
+          _) if isStubbedRequestEntity(entity) =>
+            HttpResponse(
+              status = StatusCodes.OK,
+              entity = HttpEntity(ContentTypes.`application/json`, responseJson))
       }
     }
 
     private def isStubbedRequestEntity(entity: HttpEntity): Boolean = {
-      val requestParams = urlDecode(entity.asString)
+      val requestParams = urlDecode(entity.extractAsString)
 
       params.forall {
         case (k, v) => requestParams.contains(k) && (v == requestParams(k))

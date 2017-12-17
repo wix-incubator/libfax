@@ -1,5 +1,6 @@
 package com.wix.fax.testkit
 
+
 trait FaxDocumentBuilder {
   /**
    * @return an HTML fax document for tests.
@@ -22,3 +23,6 @@ trait FaxDocumentBuilder {
        |</html>""".stripMargin
   }
 }
+
+
+object FaxDocumentBuilder extends FaxDocumentBuilder
