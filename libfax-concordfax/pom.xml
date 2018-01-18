@@ -10,7 +10,7 @@
     <parent>
         <groupId>com.wix.fax</groupId>
         <artifactId>libfax-all</artifactId>
-        <version>1.2.0</version>
+        <version>1.3.0-SNAPSHOT</version>
     </parent>
 
 
@@ -43,12 +43,12 @@
         <dependency>
             <groupId>com.wix.fax</groupId>
             <artifactId>libfax-api</artifactId>
-            <version>1.2.0</version>
+            <version>1.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.wix.fax</groupId>
             <artifactId>libfax-concordfax-core</artifactId>
-            <version>1.2.0</version>
+            <version>1.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.google.http-client</groupId>
@@ -60,13 +60,13 @@
         <dependency>
             <groupId>com.wix.fax</groupId>
             <artifactId>libfax-testkit</artifactId>
-            <version>1.2.0</version>
+            <version>1.3.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.wix.fax</groupId>
             <artifactId>libfax-concordfax-testkit</artifactId>
-            <version>1.2.0</version>
+            <version>1.3.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

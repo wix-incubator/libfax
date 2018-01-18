@@ -10,7 +10,7 @@
     <parent>
         <groupId>com.wix.fax</groupId>
         <artifactId>libfax-all</artifactId>
-        <version>1.2.0</version>
+        <version>1.3.0-SNAPSHOT</version>
     </parent>
 
 
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>com.wix.fax</groupId>
             <artifactId>libfax-api</artifactId>
-            <version>1.2.0</version>
+            <version>1.3.0-SNAPSHOT</version>
         </dependency>
 
         <!-- Test Dependencies -->
