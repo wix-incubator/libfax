@@ -1,6 +1,7 @@
 package com.wix.fax.concordfax.it
 
 
+import scala.util.Failure
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 import com.google.api.client.http.HttpRequestFactory
@@ -74,8 +75,8 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
 
       fax.send(
         to = someTo,
-        html = someFaxDocumentHtml) must beAFailedTry(
-          check = FaxErrorException(s"${aFailedSendFaxResponse.errorCode}|${aFailedSendFaxResponse.errorString}"))
+        html = someFaxDocumentHtml) must be_===(Failure(
+          FaxErrorException(s"${aFailedSendFaxResponse.errorCode}|${aFailedSendFaxResponse.errorString}")))
     }
   }
 
@@ -104,7 +105,8 @@ class ConcordfaxFaxIT extends SpecWithJUnit {
 
       driver.aSimpleGetFaxStatusFor(someCredentials, someJobId) returns unknownStatus
 
-      fax.retrieveStatus(documentId = someJobId) must beAFailedTry(check = FaxErrorException(unknownStatus.toString))
+      fax.retrieveStatus(documentId = someJobId) must be_===(Failure(
+        FaxErrorException(s"Unknown ConcordFax status code: $unknownStatus")))
     }
   }
 

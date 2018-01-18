@@ -3,6 +3,7 @@ package com.wix.fax.interfax.sl.it
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
+import org.specs2.matcher.Matcher
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 import com.google.api.client.http.HttpRequestFactory
@@ -97,10 +98,14 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
   def aSendFailedQueryResult(): QueryResult = aQueryResult(StatusCode.busy)
 
-  def aFailedQueryResult(): QueryResult = {
+  def aFailedQueryResult(errorCode: Int): QueryResult = {
     val queryResult = new QueryResult
-    queryResult.ResultCode = someErrorCode
+    queryResult.ResultCode = errorCode
     queryResult
+  }
+
+  def beAnExceptionWithErrorCode[T <: Throwable](errorCode: Int): Matcher[Throwable] = {
+    (contain(errorCode.toString) ^^ { (_: T).getMessage }).asInstanceOf[Matcher[Throwable]]
   }
 
 
@@ -131,7 +136,8 @@ class InterfaxslFaxIT extends SpecWithJUnit {
 
       fax.send(
         to = someTo,
-        html = someFaxDocumentHtml) must beAFailedTry(check = FaxErrorException(someErrorCode.toString))
+        html = someFaxDocumentHtml) must beAFailedTry(
+          check = beAnExceptionWithErrorCode[FaxErrorException](someErrorCode))
     }
   }
 
@@ -155,10 +161,10 @@ class InterfaxslFaxIT extends SpecWithJUnit {
     }
 
     "gracefully fail on error" in new Ctx {
-      driver.aQueryListFor(aQueryListRequest()) returns aFailedQueryResult()
+      driver.aQueryListFor(aQueryListRequest()) returns aFailedQueryResult(someErrorCode)
 
       fax.retrieveStatus(documentId = someTransactionId.toString) must beAFailedTry(
-        check = FaxErrorException(someErrorCode.toString))
+        check = beAnExceptionWithErrorCode[FaxErrorException](someErrorCode))
     }
   }
 
@@ -176,10 +182,10 @@ class InterfaxslFaxIT extends SpecWithJUnit {
     }
 
     "gracefully fail on error" in new Ctx {
-      driver.aQueryListFor(aQueryListRequestWithMultipleIds()) returns aFailedQueryResult()
+      driver.aQueryListFor(aQueryListRequestWithMultipleIds()) returns aFailedQueryResult(someErrorCode)
 
       fax.retrieveStatuses(documentIds = List(someTransactionId.toString, someTransactionId2.toString)) must
-        beAFailedTry(check = FaxErrorException(someErrorCode.toString))
+        beAFailedTry(check = beAnExceptionWithErrorCode[FaxErrorException](someErrorCode))
     }
   }
 

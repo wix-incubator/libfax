@@ -4,7 +4,6 @@ package com.wix.fax.interfax.sl.testkit
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 import java.util.{List => JList}
-
 import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model._
 import com.google.api.client.http.UrlEncodedParser

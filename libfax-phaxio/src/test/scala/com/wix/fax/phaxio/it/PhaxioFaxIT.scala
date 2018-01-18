@@ -2,6 +2,7 @@ package com.wix.fax.phaxio.it
 
 
 import scala.concurrent.duration._
+import org.specs2.matcher.Matcher
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 import com.google.api.client.http.HttpRequestFactory
@@ -96,6 +97,10 @@ class PhaxioFaxIT extends SpecWithJUnit {
       message = someErrorMessage)
   }
 
+  def beAnExceptionWithErrorMessage[T <: Throwable](errorMessage: String): Matcher[Throwable] = {
+    (contain(errorMessage) ^^ { (_: T).getMessage }).asInstanceOf[Matcher[Throwable]]
+  }
+
 
   step {
     driver.start()
@@ -124,7 +129,8 @@ class PhaxioFaxIT extends SpecWithJUnit {
 
       fax.send(
         to = someTo,
-        html = someFaxDocumentHtml) must beAFailedTry(check = FaxErrorException(someErrorMessage))
+        html = someFaxDocumentHtml) must beAFailedTry(
+          check = beAnExceptionWithErrorMessage[FaxErrorException](someErrorMessage))
     }
   }
 
@@ -152,7 +158,7 @@ class PhaxioFaxIT extends SpecWithJUnit {
       driver.aFaxStatusFor(aFaxStatusRequest(someFaxId)) returns aFailedFaxStatusResponse()
 
       fax.retrieveStatus(documentId = someFaxId.toString) must beAFailedTry(
-        check = FaxErrorException(someErrorMessage))
+        check = beAnExceptionWithErrorMessage[FaxErrorException](someErrorMessage))
     }
   }
 
@@ -173,7 +179,7 @@ class PhaxioFaxIT extends SpecWithJUnit {
       driver.aFaxStatusFor(aFaxStatusRequest(someFaxId2)) returns aFailedFaxStatusResponse()
 
       fax.retrieveStatuses(documentIds = List(someFaxId.toString, someFaxId2.toString)) must beAFailedTry(
-        check = FaxErrorException(someErrorMessage))
+        check = beAnExceptionWithErrorMessage[FaxErrorException](someErrorMessage))
     }
   }
 
